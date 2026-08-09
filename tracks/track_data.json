@@ -1,0 +1,83 @@
+[
+    {
+        "track_id": 262,
+        "track_name": "Nurburgring Combined",
+        "config_name": "Gesamtstrecke VLN",
+        "corners_per_lap": 165.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.326574+00:00"
+    },
+    {
+        "track_id": 580,
+        "track_name": "adelaide",
+        "config_name": "Street Circuit",
+        "corners_per_lap": 14.0,
+        "source": "sdk_track_num_turns",
+        "confidence": "baixa",
+        "updated_at": "2026-08-09T17:36:18.154503+00:00"
+    },
+    {
+        "track_id": 447,
+        "track_name": "EchoPark Speedway (Atlanta)",
+        "config_name": "Oval",
+        "corners_per_lap": 4.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.324572+00:00"
+    },
+    {
+        "track_id": 525,
+        "track_name": "Circuit de Spa-Francorchamps",
+        "config_name": "Endurance",
+        "corners_per_lap": 21.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.325074+00:00"
+    },
+    {
+        "track_id": 523,
+        "track_name": "Circuit de Spa-Francorchamps",
+        "config_name": "Grand Prix Pits",
+        "corners_per_lap": 21.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.325572+00:00"
+    },
+    {
+        "track_id": 191,
+        "track_name": "Daytona International Speedway",
+        "config_name": "Oval",
+        "corners_per_lap": 4.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.326073+00:00"
+    },
+    {
+        "track_id": 249,
+        "track_name": "Nurburgring Nordschleife",
+        "config_name": "Industriefahrten",
+        "corners_per_lap": 73.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:40:03.326574+00:00"
+    },
+    {
+        "track_id": 268,
+        "track_name": "Circuit des 24 Heures du Mans",
+        "config_name": "24 Heures du Mans",
+        "corners_per_lap": 38.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:47:38.816852+00:00"
+    },
+    {
+        "track_id": 586,
+        "track_name": "WeatherTech Raceway at Laguna Seca",
+        "config_name": "2026",
+        "corners_per_lap": 11.0,
+        "source": "iracing_data_api",
+        "confidence": "alta",
+        "updated_at": "2026-08-09T19:47:38.818363+00:00"
+    }
+]

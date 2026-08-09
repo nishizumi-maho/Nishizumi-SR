@@ -1,0 +1,13 @@
+# Dados pessoais de corrida - NAO versionar.
+# O modelo foi calibrado com eles, mas os resultados agregados ja estao em
+# docs/RESEARCH.md secao 9; o historico bruto e' pessoal.
+data/
+logs/
+docs/RESULTS_SCRAPE_NOTES.md
+
+# Config local (contem a calibracao pessoal da janela)
+config/settings.json
+
+__pycache__/
+*.pyc
+.claude/
