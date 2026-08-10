@@ -1,7 +1,7 @@
 """
-Configuracao persistente do aplicativo (config/settings.json).
+Persistent application configuration (config/settings.json).
 
-Criado com valores padrao na primeira execucao caso o arquivo nao exista.
+Created with defaults on first run if the file does not exist.
 """
 
 from __future__ import annotations
@@ -17,16 +17,15 @@ SETTINGS_PATH = Path(__file__).resolve().parent / "settings.json"
 
 
 def _known_fields(cls, data: dict) -> dict:
-    """Filtra `data` para as chaves que `cls` (um dataclass) realmente aceita.
+    """Filter `data` down to the keys `cls` (a dataclass) actually accepts.
 
-    Necessario porque settings.json e' escrito em disco e sobrevive a
-    mudancas de schema entre versoes (ex.: model v1 -> v2 trocou os
-    coeficientes) - sem isso, uma chave antiga sobrando no arquivo salvo
-    quebraria o load() com TypeError em vez de so ser ignorada."""
+    Needed because settings.json lives on disk and survives schema changes
+    between versions - without this, a leftover key from an older model would
+    break load() with a TypeError instead of just being ignored."""
     valid = {f.name for f in fields(cls)}
     ignored = set(data) - valid
     if ignored:
-        logger.warning("Ignorando chaves obsoletas em settings.json: %s", sorted(ignored))
+        logger.warning("Ignoring obsolete keys in settings.json: %s", sorted(ignored))
     return {k: v for k, v in data.items() if k in valid}
 
 
@@ -48,14 +47,14 @@ class HotkeySettings:
 
 @dataclass
 class ModelSettings:
-    """Parametros do modelo v3 (ver sr/model.py).
+    """Model parameters (see sr/model.py).
 
-    Nao ha mais `sensitivity_k`: a relacao CPI->SR nao e' mais um coeficiente
-    livre, foi medida contra a API /data do iRacing (sr/license_map.py). O que
-    sobra calibravel e' so' a regra da janela movel.
+    The CPI->SR relationship is not a free coefficient - it was measured
+    against iRacing's own result data (sr/license_map.py). What remains
+    calibratable is only the rolling-average window.
     """
-    window_corners: float = 2150.0
-    alpha_max: float = 0.34
+    window_band1: float = 1050.0
+    window_band_ratio: float = 1.41
     max_abs_session_delta: float = 3.0
 
 
@@ -64,11 +63,11 @@ class AppSettings:
     overlay: OverlaySettings = field(default_factory=OverlaySettings)
     hotkeys: HotkeySettings = field(default_factory=HotkeySettings)
     model: ModelSettings = field(default_factory=ModelSettings)
-    # Tipos de sessao que alimentam a estimativa. Sporting Code 3.7.1.1 lista
-    # "Practice within a Ranked Race event" como pontuavel, e a tabela 4.3.1.1
-    # separa "Open Practice" (nao conta) de "Practice" dentro do evento (conta)
-    # - por isso "practice" entra aqui, com peso 0.50/0.35 vindo de
-    # sr.model.SESSION_WEIGHTS em vez de tudo-ou-nada.
+    # Session types that feed the estimate. Sporting Code 3.7.1.1 lists
+    # "Practice within a Ranked Race event" as scoreable, and table 4.3.1.1
+    # separates "Open Practice" (does not count) from in-event "Practice"
+    # (does) - hence "practice" is here, weighted 0.50/0.35 via
+    # sr.model.SESSION_WEIGHTS rather than being all-or-nothing.
     session_types_counted: list[str] = field(
         default_factory=lambda: ["race", "heat", "qualify", "warmup", "time_trial", "practice"]
     )
@@ -81,13 +80,13 @@ def load(path: Path = SETTINGS_PATH) -> AppSettings:
     if not path.exists():
         settings = AppSettings()
         save(settings, path)
-        logger.info("settings.json nao encontrado, criado com valores padrao")
+        logger.info("settings.json not found; created with defaults")
         return settings
 
     try:
         raw = json.loads(path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
-        logger.error("Falha ao ler settings.json (%s), usando padrao", exc)
+        logger.error("Could not read settings.json (%s); using defaults", exc)
         return AppSettings()
 
     settings = AppSettings()

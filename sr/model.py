@@ -1,61 +1,64 @@
-"""Modelo v3 de estimativa de Safety Rating.
+"""Safety Rating model (v4).
 
-O QUE MUDOU EM RELACAO AO v2 (e por que)
-O v2 era uma reta inventada (`delta = k * (curvas/target_cpi - incidentes)`)
-com um unico coeficiente livre arbitrario. O v3 nao inventa a relacao entre
-CPI e SR: ela foi **medida** a partir de 1.280 observacoes reais da API /data
-do iRacing e reproduz o numero oficial com MAE de 0.007 SR
-(ver sr/license_map.py e docs/RESEARCH.md).
+WHAT THIS IS
+Not iRacing's source code - a reconstruction measured against iRacing's own
+published result data. Two of the three steps are essentially exact; the
+third is fitted and its residual error is stated below.
 
-O MODELO EM TRES PASSOS
-1. **Inverter**: do SR atual (lido do SDK) tira-se o CPI que o iRacing tem
-   por tras dele  ->  `license_map.cpi_from_sr`. Exato.
-2. **Atualizar o CPI** com a sessao em andamento (o unico passo ainda
-   aproximado - ver "A JANELA" abaixo):
+THE MODEL, IN THREE STEPS
+1. **Invert.** Turn the SR read from the SDK into the CPI sitting behind it
+   -> `license_map.cpi_from_sr`. Exact: the CPI<->SR mapping reproduces
+   iRacing's own number with MAE 0.007 SR over 12,639 observations.
 
-       x = 1/CPI                        (incidentes por curva)
-       alpha = min(1, curvas / janela)
-       x_novo = x*(1 - alpha) + alpha * (pontos_de_incidente / curvas)
+2. **Update the CPI** with the session just driven:
 
-   Cada tipo de sessao entra com o peso do Sporting Code 3.6.1.1, aplicado
-   **as curvas E aos incidentes** (o nome oficial e' "Corner and Incident
-   Multipliers" - o v2 aplicava so' nos incidentes, o que inflava o CPI de
-   qualify/TT indevidamente).
-3. **Remapear para SR** com a regra de faixas sobrepostas (Sporting Code
-   3.7.4) -> `license_map.remap_band`. O salto de ~0.40 ao cruzar 2.00/3.00
-   sai sozinho da geometria, nao esta chumbado.
+       x     = 1 / CPI                       (incidents per corner)
+       alpha = 1 - exp(-corners / window)    (this session's weight)
+       x_new = x*(1 - alpha) + alpha * (incident_points / corners)
 
-A JANELA (unica peca ainda nao exata - mas agora medida, nao chutada)
-`old_cpi`/`new_cpi` reais permitem resolver a janela por corrida:
+   Corners and incidents both arrive already multiplied by the session weight
+   from Sporting Code 3.6.1.1 - the official name is "Corner AND Incident
+   Multipliers", so the weight applies to both sides.
 
-    janela = (incidentes - curvas/CPI_antigo) / (1/CPI_novo - 1/CPI_antigo)
+3. **Remap to SR** using the overlapping-band rule (Sporting Code 3.7.4)
+   -> `license_map.remap_band`. The documented "+0.40 when you cross a whole
+   number" is not hardcoded anywhere; it falls out of the band geometry.
 
-Nas corridas desta conta isso deu ~1500-2000 curvas nas sessoes normais, mas
-2726 e 4878 nas duas corridas muito longas de Nurburgring Combined (990 e
-1485 curvas). Ou seja: **uma janela fixa sozinha nao explica os dados** -
-sessoes grandes pesam menos do que ela preveria. Modelando o peso como
+THE WINDOW - what was measured, and how
+Because official results carry both `old_cpi` and `new_cpi`, alpha can be
+solved exactly for every session:
 
-    alpha = min(alpha_max, curvas / janela)
+    alpha = (1/CPI_new - 1/CPI_old) / (incidents/corners - 1/CPI_old)
 
-o ajuste conjunto nas 8 corridas com curvas>0 da janela=1650, alpha_max=0.335
-e **RMSE de 0.0205 SR (erro maximo 0.039)** - contra 0.106 sem o teto e 0.247
-com o modelo v2.
+Doing that for 10,773 driver-sessions (GT Sprint plus four endurance series)
+gave two results that the earlier model had wrong:
 
-O teto se sustenta em duas amostras independentes: 0.335 ajustando so' as 8
-corridas desta conta e **0.34** ajustando 198 sessoes-piloto de outros pilotos.
-Essa convergencia perto de 1/3 e' o achado; ela nao tem fonte oficial. Ja a
-janela e' menos estavel (1650 pessoal vs 2150 populacao), por isso o padrao
-enviado e' o de populacao e `python -m sr.calibration` personaliza.
+- **The window depends only on the SR band, never on the licence class.**
+  A Class B driver and a Class A driver sitting in the same whole-number band
+  share the same window to within 2% (B band 3 = 2274 corners, A band 3 =
+  2314). It grows by a factor of ~1.41 per band, so a higher SR means a longer
+  memory - which is why SR gets progressively harder to move as it climbs.
 
-Sessoes MUITO longas e de equipe (enduro) sao o pior caso: no recorte de 593
-sessoes com mais de 800 curvas o RMSE sobe para ~0.19 SR, contra ~0.11 nas
-sessoes normais. Provavelmente porque em evento de equipe as voltas por piloto
-e o CPI do carro nao se alinham perfeitamente.
+- **The weighting is an exponential moving average, not a fixed window.**
+  Binning the solved alpha against corners/window reproduces 1 - exp(-x)
+  across the entire observed range (x from 0.06 to 2.9). The previous model
+  used min(cap, x), which is only correct for small x and needed an arbitrary
+  cap near 1/3 to stop long races blowing up. That cap was an artifact of
+  fitting a fixed window to nine races.
 
-LIMITE CONHECIDO: curvas so' sao contadas por volta completa nesta validacao
-retroativa (uma corrida com 0 voltas completas fica com 0 curvas e o modelo
-nao ve o incidente). Rodando ao vivo o app tem LapDistPct e pode contar a
-fracao de volta - ou seja, esse caso e' pior aqui do que sera em uso real.
+Fitted: window_band1 = 1050 corners, ratio = 1.4142 (sqrt 2) per band, giving
+windows of 1050 / 1485 / 2100 / 2970 corners for the 1.xx to 4.xx bands.
+Giving each band its own free window converges onto exactly that geometric
+progression, so the law is real rather than imposed.
+Accuracy over the 10,773 sessions: 1.4% RMSE on the predicted CPI, 0.026 SR
+mean absolute error, 6.5% of predictions off by more than 0.05 SR. The old
+linear-plus-cap form scored 9.2% / 0.090 SR / 51% on the same data.
+
+KNOWN LIMITATION
+Corners are counted from laps in offline validation, so a driver who pits and
+rejoins mid-lap has their corners undercounted. Running live the app uses
+LapDistPct and counts the fraction actually driven, so this case is worse in
+validation than in real use.
 """
 
 from __future__ import annotations
@@ -69,15 +72,15 @@ from sr.license_map import cpi_from_sr, remap_band
 
 logger = logging.getLogger("sr_estimator.model")
 
-# Sporting Code v2025.09.09, secao 3.6.1.1 - "Table of Corner and Incident
-# Multipliers". Valem para curvas E incidentes.
+# Sporting Code v2025.09.09, section 3.6.1.1 - "Table of Corner and Incident
+# Multipliers". These apply to corners AND incidents.
 SESSION_WEIGHTS = {
     "race": 1.00,
     "heat": 1.00,
-    "qualify": 0.50,        # Qualify - Open (o comum em sessao oficial)
+    "qualify": 0.50,        # Qualify - Open (the usual case in official events)
     "qualify_lone": 0.35,   # Qualify - Lone
     "warmup": 0.50,
-    "practice": 0.50,       # Practice - Open dentro de um evento Ranked
+    "practice": 0.50,       # Practice - Open inside a Ranked event
     "practice_lone": 0.35,
     "time_trial": 0.35,
     "unknown": 0.00,        # "All Other Session Types" -> 0.00
@@ -86,50 +89,77 @@ SESSION_WEIGHTS = {
 
 @dataclass
 class SRModelParams:
-    # Ajustados em 198 sessoes-piloto independentes (sessoes "normais", ate 800
-    # curvas) com CPI oficial da API /data: RMSE 0.109 SR. Nas 8 corridas desta
-    # conta especificamente esses valores dao MAE 0.035 SR; um ajuste so' nelas
-    # daria 1650 (MAE 0.013). O padrao aqui e' o de POPULACAO porque generaliza;
-    # use `python -m sr.calibration` para personalizar com o seu historico.
-    window_corners: float = 2150.0
-    # Teto do peso de UMA sessao. Sem ele, corridas longas (Nurburgring
-    # Combined, 990 e 1485 curvas) eram superestimadas em +0.45 a +0.79 SR.
-    # Achado robusto: 0.335 ajustando so' as 8 corridas desta conta e 0.34
-    # ajustando 198 sessoes de outros pilotos - duas amostras independentes
-    # convergindo perto de 1/3. Nao ha fonte oficial para este teto.
-    alpha_max: float = 0.34
-    max_abs_session_delta: float = 3.0  # sanity clamp, briefing secao 26
+    """Fitted to 10,773 driver-sessions from official iRacing results.
+
+    `window_band1` is the EMA decay constant, in corners, for drivers sitting in
+    the 1.xx SR band; `window_band_ratio` multiplies it for each band above that.
+    Both came out of a joint fit over sprint (GT Sprint Series) and endurance
+    (Production / Global / GT Endurance) races - see docs/RESEARCH.md 9.5.
+    """
+    window_band1: float = 1050.0
+    window_band_ratio: float = 1.4142  # sqrt(2)
+    max_abs_session_delta: float = 3.0  # sanity clamp
 
 
 DEFAULT_PARAMS = SRModelParams()
 
 
 def session_weight(session_type: Optional[str]) -> float:
-    """Peso do Sporting Code para o tipo de sessao (0.00 se desconhecido)."""
+    """Sporting Code weight for a session type (0.00 when unrecognised)."""
     return SESSION_WEIGHTS.get((session_type or "unknown").lower(), 0.00)
+
+
+def window_corners(band: int, params: "SRModelParams" = None) -> float:
+    """EMA decay constant, in corners, for a driver in this whole-number band.
+
+    Measured: the window depends ONLY on the SR band, not on the licence class.
+    Class B and Class A drivers sitting in the same band share the same window
+    to within 2% (B band3 = 2274 corners, A band3 = 2314). Higher SR means a
+    longer memory, which is why it gets progressively harder to move.
+    """
+    p = params or DEFAULT_PARAMS
+    return p.window_band1 * (p.window_band_ratio ** max(0, int(band) - 1))
+
+
+def session_alpha(corners: float, band: int, params: "SRModelParams" = None) -> float:
+    """Weight this session carries in the rolling average.
+
+    alpha = 1 - exp(-corners / window)
+
+    This is an exponentially weighted moving average, not a fixed window with a
+    cutoff. The shape was measured directly: solving alpha exactly for each of
+    10,773 sessions and binning by corners/window reproduces 1 - exp(-x) across
+    the whole observed range (x from 0.06 to 2.9). The previous model used
+    min(cap, x), which is only correct for small x and needed an arbitrary cap
+    to stop long races blowing up.
+    """
+    if corners <= 0:
+        return 0.0
+    return 1.0 - math.exp(-corners / max(1.0, window_corners(band, params)))
 
 
 def update_cpi(
     cpi_old: float,
     corners: float,
     incident_points: float,
-    params: SRModelParams = DEFAULT_PARAMS,
+    band: int,
+    params: SRModelParams = None,
 ) -> float:
-    """Aplica uma sessao ao CPI acumulado (passo 2 do modelo).
+    """Apply one session to the accumulated CPI (step 2 of the model).
 
-    `corners` e `incident_points` ja devem vir multiplicados pelo peso da
-    sessao. Retorna o CPI novo; nunca divide por zero nem devolve infinito.
+    `corners` and `incident_points` must already carry the session weight.
+    Never divides by zero and never returns infinity.
     """
+    params = params or DEFAULT_PARAMS
     if corners <= 0 or cpi_old <= 0:
         return cpi_old
-    window = max(1.0, params.window_corners)
-    alpha = min(params.alpha_max, corners / window)
+    alpha = session_alpha(corners, band, params)
     x_old = 1.0 / cpi_old
     x_session = incident_points / corners
     x_new = x_old * (1.0 - alpha) + alpha * x_session
     if x_new <= 1e-9:
-        # sessao perfeita ocupando a janela inteira: CPI enorme, mas finito.
-        # O SR ja e' limitado a 4.99 no remapeamento, entao isto so' evita inf.
+        # A perfect session filling the whole window: huge CPI, but finite.
+        # SR is clamped to 4.99 in the remap anyway, so this only avoids inf.
         return 1e9
     return 1.0 / x_new
 
@@ -142,22 +172,22 @@ def project_sr(
     band: Optional[int] = None,
     params: SRModelParams = DEFAULT_PARAMS,
 ) -> tuple[float, float, float]:
-    """Estimativa completa da sessao.
+    """Full estimate for a session.
 
-    Retorna (sr_projetado, delta, cpi_novo). `corners` e `incident_points` ja
-    ponderados pelo peso da sessao.
+    Returns (projected_sr, delta, new_cpi). `corners` and `incident_points`
+    must already carry the session weight.
     """
     if band is None:
         band = int(math.floor(sr_before))
     cpi_old = cpi_from_sr(sr_before, class_index, band)
-    cpi_new = update_cpi(cpi_old, corners, incident_points, params)
+    cpi_new = update_cpi(cpi_old, corners, incident_points, band, params)
     sr_new, _ = remap_band(cpi_new, class_index, band)
 
     delta = sr_new - sr_before
     bound = abs(params.max_abs_session_delta)
     if abs(delta) > bound:
         logger.error(
-            "Delta de SR estimado (%+.2f) passou do limite de seguranca (%.2f); foi clampado",
+            "Estimated SR delta (%+.2f) exceeded the safety bound (%.2f); clamped",
             delta, bound,
         )
         delta = max(-bound, min(bound, delta))
@@ -173,12 +203,12 @@ def estimate_delta(
     band: Optional[int] = None,
     params: SRModelParams = DEFAULT_PARAMS,
 ) -> float:
-    """Atalho para quem so' quer o delta."""
+    """Shortcut when only the delta is needed."""
     return project_sr(sr_before, class_index, corners, incident_points, band, params)[1]
 
 
 def compute_cpi(corners: float, incident_points: float) -> Optional[float]:
-    """CPI **da sessao atual** (nao o acumulado). None = limpo -> mostrar Clean."""
+    """CPI of the CURRENT session (not the accumulated one). None = clean."""
     if incident_points <= 0:
         return None
     return corners / incident_points

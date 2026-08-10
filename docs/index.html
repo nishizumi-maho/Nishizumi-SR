@@ -84,8 +84,9 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   <h1>Nishizumi <span>SR</span></h1>
   <p class="sub">Work out what a session will do to your iRacing Safety Rating —
   before you drive it. The CPI→SR mapping here was reconstructed from iRacing's
-  own <code>old_cpi</code>/<code>new_cpi</code> data and reproduces the official
-  number to about <strong>±0.01 SR</strong>.</p>
+  own <code>old_cpi</code>/<code>new_cpi</code> data, fitted against
+  <strong>10,773 real driver-sessions</strong>, and typically lands within
+  <strong>0.01–0.02 SR</strong> of the official result.</p>
 </header>
 
 <div class="grid">
@@ -233,13 +234,21 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   <p class="note">Note the widely-repeated “70–80 CPI to hold A-class at 3.00” is
   wrong — measured, it is about 48.5. The 70.7 figure belongs to Pro.</p>
 
-  <h3>What is still approximate</h3>
-  <p>The CPI→SR mapping is essentially exact. The <em>rolling window</em> — how
-  much one session shifts your accumulated CPI — is not. It is modelled as
-  <code>alpha = min(0.34, corners / 2150)</code>. That cap near ⅓ replicated across
-  two independent samples, but has no official source. Expect roughly
-  <strong>±0.11 SR</strong> on normal sessions and worse (±0.19) on very long or
-  team endurance races.</p>
+  <h3>How one session moves your CPI</h3>
+  <p>Your accumulated CPI is an <strong>exponentially weighted moving average</strong>
+  over corners. A session of <code>c</code> corners carries weight</p>
+  <pre>alpha  = 1 - exp(-c / window)
+window = 1050 x 1.4142^(band-1)   ->  1050 / 1485 / 2100 / 2970 corners</pre>
+  <p>Two things here were measured, not assumed. The window depends
+  <strong>only on your whole-number SR band, never on your licence class</strong> —
+  a Class B and a Class A driver sitting in the same band share the same window to
+  within 2%. And letting each band take its own free value converges onto exactly
+  that √2 progression. A higher SR means a longer memory, which is why SR gets
+  harder to move the higher it climbs.</p>
+  <p>Fitted against 10,773 driver-sessions from official results: <strong>1.4%
+  error on the predicted CPI</strong>, median <strong>0.010 SR</strong>, and 93% of
+  final SR values within 0.05. Short races are the least precise, because iRacing
+  counts the distance actually driven while results only report whole laps.</p>
   <p>Practice sessions only count when they are part of a Ranked race event.
   Standalone Open Practice does not affect SR at all.</p>
 </details>
@@ -255,7 +264,7 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
 "use strict";
 /* ─── measured constants (see docs) ─────────────────────────── */
 const A = 1.5236, R = 1.4562, F0 = 3.4949;
-const WINDOW = 2150, ALPHA_MAX = 0.34;
+const W_BAND1 = 1050, W_RATIO = 1.4142;   // EMA decay, corners; x sqrt(2) per SR band
 const WEIGHT = {race:1, heat:1, qualify:.5, warmup:.5, practice:.5,
                 qualify_lone:.35, practice_lone:.35, time_trial:.35};
 
@@ -275,11 +284,12 @@ function remap(cpi, ci, band){
   }
   return {sr: Math.max(0, Math.min(4.99, srFromCpi(cpi, ci, band))), band};
 }
+const windowFor = band => W_BAND1 * Math.pow(W_RATIO, Math.max(0, band - 1));
 function project(sr0, ci, corners, inc){
   const band = Math.floor(sr0);
   const cpi0 = cpiFromSr(sr0, ci);
   if (corners <= 0) return {sr: sr0, delta: 0, cpi: cpi0, band};
-  const a = Math.min(ALPHA_MAX, corners / WINDOW);
+  const a = 1 - Math.exp(-corners / windowFor(band));
   const x = (1/cpi0)*(1-a) + a*(inc/corners);
   const cpi = x > 1e-9 ? 1/x : 1e9;
   const r = remap(cpi, ci, band);

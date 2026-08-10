@@ -467,35 +467,68 @@ Validação independente: aplicado às 5 licenças de uma conta real (classes B 
 categorias distintas), o erro máximo foi **0.011 SR** — e o próprio site do
 iRacing só exibe 2 casas decimais, então isso está no limite do observável.
 
-### 9.5 A atualização do CPI (única peça ainda aproximada)
+### 9.5 The CPI update — measured on 10,773 sessions
 
-Com `old_cpi` e `new_cpi` conhecidos dá pra resolver a janela por corrida:
-
-```
-janela = (incidentes - curvas/CPI_antigo) / (1/CPI_novo - 1/CPI_antigo)
-```
-
-Numa amostra de corridas reais isso deu ~1.500–2.000 curvas nas sessões de
-tamanho normal, mas 2.726 e 4.878 em duas corridas muito longas (Nürburgring
-Combined, 990 e 1.485 curvas). Ou seja:
-**uma janela fixa sozinha não explica os dados** — sessões grandes pesam menos
-do que ela preveria. Modelando o peso da sessão como
+Because official results carry both `old_cpi` and `new_cpi`, the weight a session
+carries can be solved **exactly**, with no fitting:
 
 ```
-alpha = min(alpha_max, curvas / janela)
+alpha = (1/CPI_new - 1/CPI_old) / (incidents/corners - 1/CPI_old)
 ```
 
-o ajuste dá RMSE de **0.0205 SR** num conjunto pequeno de corridas de um mesmo
-piloto (janela 1650, alpha_max 0.335) e **0.109 SR** em 198 sessões-piloto
-independentes de terceiros (janela 2150, alpha_max 0.34). O que replica entre as
-duas amostras é o **teto perto de 1/3**; a janela em si é menos estável. O padrão
-enviado é o de população, e `python -m sr.calibration` personaliza a partir do
-seu próprio histórico.
+Doing that for 10,773 driver-sessions (GT Sprint Series plus four endurance
+series) settled three questions that an earlier 9-race sample had got wrong.
 
-Numa amostra maior (783 pilotos-sessão de 9 subsessions), a janela resolvida
-varia bastante (mediana 3.329, IQR/mediana 0.51) e cresce com o nível de
-licença e com o tamanho da sessão. Isso é honestamente **não resolvido**: pode
-ser janela por classe, decaimento por número de sessões, ou ambos.
+**1. The window depends only on the SR band — never on the licence class.**
+
+| band | Class B | Class A |
+|---|---|---|
+| 1.xx | 1217 | 1246 |
+| 2.xx | 1661 | 1681 |
+| 3.xx | 2274 | 2314 |
+| 4.xx | — | 3185 |
+
+Same band, different class, same window to within 2%. Grouping by
+`class + band` (the rung used by the CPI ladder) does **not** collapse, so this is
+genuinely the whole-number SR band. Higher SR means longer memory.
+
+**2. The weighting is an exponential moving average, not a fixed window.**
+Binning the solved alpha against `corners / window` gives:
+
+| corners/window | alpha observed | 1 − exp(−x) |
+|---|---|---|
+| 0.20 | 0.201 | 0.181 |
+| 0.30 | 0.284 | 0.259 |
+| 0.52 | 0.446 | 0.405 |
+| 0.93 | 0.646 | 0.606 |
+| 1.90 | 0.878 | 0.850 |
+| 2.93 | 0.964 | 0.947 |
+
+Linear up to ~0.37 (as far as sprint races reach), then saturating exactly as an
+EMA does. The previous model used `min(cap, x)` with a cap near 1/3 — that cap was
+an artifact of fitting a fixed window to nine races, and it disappears here.
+
+**3. The ratio between bands is √2.** Fitted jointly: `window_band1 = 1050`,
+ratio `1.4142`, giving 1050 / 1485 / 2100 / 2970 corners. Letting each band take
+its own free value (4 parameters instead of 2) converges onto exactly that
+progression and does not improve the error at all — the geometric law is real.
+
+Alternatives tested and rejected on the same data (RMSE on predicted CPI):
+
+| model | error |
+|---|---|
+| **EMA, window geometric by band** | **1.40%** |
+| free window per band (4 params) | 1.40% |
+| window continuous in SR | 2.12% |
+| window continuous in CPI | 3.83% |
+| linear + cap (previous model) | 9.15% |
+
+**Residual.** About 1.4% on predicted CPI, ≈0.021 SR. Starting from the exact
+official `old_cpi` instead of inverting the rounded SR barely helps (0.0267 vs
+0.0270 MAE), so the mapping is not the limit. Error falls with race length —
+0.046 SR at 1–4 laps, 0.018 at 60+ — which points at whole-lap reporting: iRacing
+counts distance actually driven, while results only report completed laps. The
+live overlay reads `LapDistPct` and does not have that limitation.
 
 ### 9.6 Desempenho do modelo v3 contra as corridas reais
 
