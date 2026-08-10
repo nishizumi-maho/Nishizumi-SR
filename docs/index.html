@@ -239,8 +239,6 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   <p>Your accumulated CPI is an <strong>exponentially weighted moving average</strong>
   over corners. A session of <code>c</code> corners carries weight</p>
   <pre>alpha  = 1 - exp(-c / window)
-window = 1050 x 1.4142^(band-1)   ->  1050 / 1485 / 2100 / 2970 corners</pre>
-<pre>alpha  = 1 - exp(-c / window)
 window = 1060 x √2^(band-1) x class factor</pre>
   <table><thead><tr><th>Band</th><th>Rookie</th><th>Class D</th><th>C / B / A / Pro</th></tr></thead>
   <tbody>

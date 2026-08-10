@@ -146,6 +146,16 @@ def main() -> None:
     tracker = SessionSRTracker(model_params)
     state = AppState()
 
+    # Stated up front so "which model is this actually running?" is answerable
+    # from the log alone. config.settings resets a model block left behind by an
+    # older build, so this line reflects what is really in use.
+    logger.info(
+        "Model v4 [%s]: window_band1=%.0f ratio=%.4f rookie=%.2f classD=%.2f",
+        settings_module.model_fingerprint(),
+        model_params.window_band1, model_params.window_band_ratio,
+        model_params.window_factor_rookie, model_params.window_factor_class_d,
+    )
+
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
 

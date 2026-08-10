@@ -6,6 +6,7 @@ Created with defaults on first run if the file does not exist.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 from dataclasses import asdict, dataclass, field, fields
@@ -68,6 +69,18 @@ class ModelSettings:
     max_abs_session_delta: float = 3.0
 
 
+def model_fingerprint() -> str:
+    """Short digest of the model parameters this build ships.
+
+    Stamped into settings.json so an upgrade can tell the difference between
+    "the user tuned this" and "this file predates the current model". Derived
+    from the defaults rather than hand-maintained, so a constant can never be
+    changed without the stamp moving with it.
+    """
+    payload = json.dumps(asdict(ModelSettings()), sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
+
+
 @dataclass
 class AppSettings:
     overlay: OverlaySettings = field(default_factory=OverlaySettings)
@@ -100,15 +113,30 @@ def load(path: Path = SETTINGS_PATH) -> AppSettings:
         return AppSettings()
 
     settings = AppSettings()
+    stale_model = False
     if "overlay" in raw:
         merged = _known_fields(OverlaySettings, {**asdict(settings.overlay), **raw["overlay"]})
         settings.overlay = OverlaySettings(**merged)
     if "hotkeys" in raw:
         merged = _known_fields(HotkeySettings, {**asdict(settings.hotkeys), **raw["hotkeys"]})
         settings.hotkeys = HotkeySettings(**merged)
-    if "model" in raw:
+    # The shipped model always wins over a file written against an older one.
+    # Within a version a personal calibration (python -m sr.calibration) is kept;
+    # across versions it is discarded, because silently running last release's
+    # constants is exactly the bug this guards against.
+    current = model_fingerprint()
+    stored = raw.get("model_fingerprint")
+    if "model" in raw and stored == current:
         merged = _known_fields(ModelSettings, {**asdict(settings.model), **raw["model"]})
         settings.model = ModelSettings(**merged)
+    elif "model" in raw:
+        logger.warning(
+            "settings.json carries model parameters from a different build (%s, this "
+            "one ships %s); using the shipped model. Re-run 'python -m sr.calibration' "
+            "to personalise it again.",
+            stored or "unstamped", current,
+        )
+        stale_model = True
     if "session_types_counted" in raw:
         settings.session_types_counted = raw["session_types_counted"]
     if "poll_interval_ms" in raw:
@@ -117,6 +145,10 @@ def load(path: Path = SETTINGS_PATH) -> AppSettings:
         settings.session_refresh_interval_ms = raw["session_refresh_interval_ms"]
     if "fallback_corners_per_lap" in raw:
         settings.fallback_corners_per_lap = raw["fallback_corners_per_lap"]
+
+    if stale_model:
+        # Re-stamp now, so the file on disk matches what the app is running.
+        save(settings, path)
     return settings
 
 
@@ -125,6 +157,7 @@ def save(settings: AppSettings, path: Path = SETTINGS_PATH) -> None:
         "overlay": asdict(settings.overlay),
         "hotkeys": asdict(settings.hotkeys),
         "model": asdict(settings.model),
+        "model_fingerprint": model_fingerprint(),
         "session_types_counted": settings.session_types_counted,
         "poll_interval_ms": settings.poll_interval_ms,
         "session_refresh_interval_ms": settings.session_refresh_interval_ms,
