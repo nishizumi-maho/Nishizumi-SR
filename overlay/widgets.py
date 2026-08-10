@@ -22,8 +22,8 @@ SESSION_TYPE_LABELS = {
 
 
 def _cpi_text(cpi: Optional[float]) -> str:
-    # "Clean" em vez do simbolo de infinito: mais legivel de relance durante a
-    # race, and avoids reading as "something broke" when it just means 0 incidents.
+    # "Clean" rather than an infinity symbol: easier to read at a glance mid-race,
+    # and it avoids looking like something broke when it just means 0 incidents.
     return "Clean" if cpi is None else f"{cpi:.1f}"
 
 
@@ -38,8 +38,8 @@ def format_waiting(message: str) -> str:
 def format_practice_notice(estimate: SREstimate) -> str:
     return (
         f'<span style="color:{COLOR_WARNING};">PRACTICE (does not count towards SR)</span><br>'
-        f'<span style="color:{COLOR_TEXT_DIM};">Curvas: {estimate.corners:.0f} '
-        f'&nbsp;|&nbsp; Incidentes: {estimate.incidents}x</span>'
+        f'<span style="color:{COLOR_TEXT_DIM};">Corners: {estimate.corners:.0f} '
+        f'&nbsp;|&nbsp; Incidents: {estimate.incidents}x</span>'
     )
 
 

@@ -1,0 +1,111 @@
+name: Release
+
+# Builds NishizumiSR.exe and publishes it.
+#
+# This has to run on Windows: PyInstaller does not cross-compile, so the .exe
+# cannot be produced from a Linux checkout. Pushing a v* tag is the trigger;
+# workflow_dispatch is there to re-run a build without moving the tag.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to build and publish (e.g. v1.1.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      # Gate the build on the tests. Shipping an overlay that cannot be closed
+      # is exactly what this is here to stop happening again.
+      - name: Run the tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python tests/test_overlay_window.py
+          python tests/test_app_smoke.py
+          python tests/test_settings_model_guard.py
+
+      - name: Verify the reference port against the shipped vectors
+        run: node docs/integration/verify.cjs
+
+      - name: Build the executable
+        run: pyinstaller NishizumiSR.spec --noconfirm
+
+      - name: Check the build produced something runnable
+        shell: bash
+        run: |
+          test -f dist/NishizumiSR.exe || { echo "::error::dist/NishizumiSR.exe is missing"; exit 1; }
+          size=$(stat -c%s dist/NishizumiSR.exe)
+          echo "NishizumiSR.exe: $size bytes"
+          # A PyInstaller onefile build with Qt in it is tens of megabytes. A few
+          # hundred KB means the bundle silently lost its dependencies.
+          test "$size" -gt 10000000 || { echo "::error::the executable is implausibly small ($size bytes)"; exit 1; }
+
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NishizumiSR-exe
+          path: dist/NishizumiSR.exe
+          if-no-files-found: error
+
+      - name: Write the release notes
+        shell: bash
+        env:
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          sha=$(sha256sum dist/NishizumiSR.exe | cut -d' ' -f1)
+          {
+            echo "Download **NishizumiSR.exe** below and run it. No Python needed."
+            echo
+            echo "Settings, learned tracks, session history and logs are written to"
+            echo '`%LOCALAPPDATA%\NishizumiSR` — never into the download itself.'
+            echo
+            echo "The overlay starts **unlocked**: drag it anywhere, then press \`lock\`"
+            echo "(or \`F9\`) to make it click-through for driving. Close it with the"
+            echo "\`✕\` on its header bar, or from the tray icon."
+            echo
+            echo "\`\`\`"
+            echo "SHA256  $sha"
+            echo "\`\`\`"
+            echo
+            echo "Built from \`$TAG\` by [this workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})."
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Publish the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG exists; replacing the executable and the notes."
+            gh release upload "$TAG" dist/NishizumiSR.exe --clobber
+            gh release edit "$TAG" --notes-file release-notes.md
+          else
+            gh release create "$TAG" dist/NishizumiSR.exe \
+              --title "Nishizumi SR $TAG" \
+              --notes-file release-notes.md
+          fi

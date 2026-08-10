@@ -14,8 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from PySide6.QtCore import QTimer
-from PySide6.QtGui import QAction, QColor, QIcon, QPainter, QPixmap
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QAction, QColor, QFont, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
 from config import settings as settings_module
@@ -55,6 +55,9 @@ from app_paths import user_file
 LOGS_DIR = user_file("logs", ".keep").parent
 OVERLAY_MODES = ["compact", "normal", "detailed"]
 SESSION_COMPLETE_DISPLAY_SECONDS = 8
+# A tick that keeps failing would otherwise fill the disk with the same
+# traceback ten times a second.
+MAX_LOGGED_TICK_ERRORS = 5
 
 
 class LogFormatter(logging.Formatter):
@@ -72,13 +75,21 @@ def setup_logging() -> None:
     formatter = LogFormatter()
     file_handler = logging.FileHandler(log_path, encoding="utf-8")
     file_handler.setFormatter(formatter)
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
 
     logger = logging.getLogger("sr_estimator")
     logger.setLevel(logging.INFO)
     logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
+
+    # A windowed PyInstaller build has no console: sys.stdout is None, and
+    # StreamHandler(None) falls back to sys.stderr, which is also None. Every
+    # single log call then raises inside logging and gets swallowed. Only
+    # attach a console handler when there is actually a console to write to.
+    if sys.stdout is not None:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+
+    logger.info("Log file: %s", log_path)
 
 
 class AppState:
@@ -91,16 +102,31 @@ class AppState:
         self.session_complete_ticks_remaining: int = 0
         self.pending_complete_html: str = ""
         self.tick_count: int = 0
+        self.tick_errors: int = 0
 
 
 def make_tray_icon() -> QIcon:
-    pixmap = QPixmap(32, 32)
+    """Green disc labelled "SR".
+
+    Windows 11 hides unfamiliar tray icons behind the overflow chevron, and the
+    tray is the recovery path when the overlay is locked or hidden - so it has
+    to be identifiable once the user goes looking for it. Drawn in code so the
+    build stays a single file with no external asset.
+    """
+    pixmap = QPixmap(64, 64)
     pixmap.fill(QColor(0, 0, 0, 0))
     painter = QPainter(pixmap)
     painter.setRenderHint(QPainter.Antialiasing)
     painter.setBrush(QColor(76, 215, 135))
     painter.setPen(QColor(15, 17, 20))
-    painter.drawEllipse(1, 1, 30, 30)
+    painter.drawEllipse(2, 2, 60, 60)
+
+    font = QFont("Consolas")
+    font.setPixelSize(30)
+    font.setBold(True)
+    painter.setFont(font)
+    painter.setPen(QColor(15, 17, 20))
+    painter.drawText(pixmap.rect(), Qt.AlignCenter, "SR")
     painter.end()
     return QIcon(pixmap)
 
@@ -120,14 +146,30 @@ def main() -> None:
     tracker = SessionSRTracker(model_params)
     state = AppState()
 
+    # Stated up front so "which model is this actually running?" is answerable
+    # from the log alone. config.settings resets a model block left behind by an
+    # older build, so this line reflects what is really in use.
+    logger.info(
+        "Model v4 [%s]: window_band1=%.0f ratio=%.4f rookie=%.2f classD=%.2f",
+        settings_module.model_fingerprint(),
+        model_params.window_band1, model_params.window_band_ratio,
+        model_params.window_factor_rookie, model_params.window_factor_class_d,
+    )
+
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(False)
 
-    window = OverlayWindow(opacity=app_settings.overlay.opacity, scale=app_settings.overlay.scale)
-    window.move(app_settings.overlay.x, app_settings.overlay.y)
-    window.set_locked(True)
-    window.show()
+    window = OverlayWindow(
+        opacity=app_settings.overlay.opacity,
+        scale=app_settings.overlay.scale,
+        locked=app_settings.overlay.locked,
+    )
     window.set_content(format_waiting("Waiting for iRacing..."))
+    # Position before showing, and only onto a screen that still exists - a
+    # saved position from a monitor that has since been unplugged would put the
+    # overlay somewhere the user cannot reach.
+    window.move_onto_screen(app_settings.overlay.x, app_settings.overlay.y)
+    window.show()
 
     mode_index = OVERLAY_MODES.index(app_settings.overlay.mode) if app_settings.overlay.mode in OVERLAY_MODES else 1
 
@@ -139,11 +181,12 @@ def main() -> None:
         app_settings.overlay.x = pos.x()
         app_settings.overlay.y = pos.y()
         app_settings.overlay.mode = current_mode()
-        settings_module.save(app_settings)
-
-    def on_toggle_lock() -> None:
-        window.toggle_lock()
-        persist_overlay_state()
+        app_settings.overlay.locked = window.locked
+        try:
+            settings_module.save(app_settings)
+        except OSError as exc:
+            # Losing the saved position is not worth taking the overlay down for.
+            logger.error("Could not write settings.json: %s", exc)
 
     def on_cycle_mode() -> None:
         nonlocal mode_index
@@ -151,39 +194,97 @@ def main() -> None:
         logger.info("Overlay mode: %s", current_mode())
         persist_overlay_state()
 
+    def reset_overlay() -> None:
+        """Bring the overlay back from wherever it has got to.
+
+        The one action that recovers every stuck state at once: hidden, locked,
+        or parked off-screen on a monitor that is no longer there.
+        """
+        window.show()
+        window.move_onto_screen(20, 20)
+        window.set_locked(False)
+        logger.info("Overlay reset to the top-left corner, unlocked")
+
+    # The window only reports intent; what it means is decided here.
+    window.close_requested.connect(app.quit)
+    window.hide_requested.connect(window.hide)
+    window.mode_cycle_requested.connect(on_cycle_mode)
+    window.position_changed.connect(persist_overlay_state)
+    window.lock_changed.connect(lambda _locked: persist_overlay_state())
+
+    hotkeys: Optional[GlobalHotkeys] = None
     try:
-        hotkeys: Optional[GlobalHotkeys] = GlobalHotkeys(
+        hotkeys = GlobalHotkeys(
             app_settings.hotkeys.toggle_overlay,
             app_settings.hotkeys.toggle_lock,
             app_settings.hotkeys.cycle_mode,
         )
         hotkeys.toggle_overlay.connect(window.toggle_visibility)
-        hotkeys.toggle_lock.connect(on_toggle_lock)
+        hotkeys.toggle_lock.connect(window.toggle_lock)
         hotkeys.cycle_mode.connect(on_cycle_mode)
     except Exception as exc:
-        logger.error("Hotkeys globais indisponiveis (%s). Use o icone na bandeja para controlar o overlay.", exc)
+        logger.error("Global hotkeys are unavailable: %s", exc)
         hotkeys = None
 
-    # --- system tray: unica forma de fechar o app de forma limpa, ja que o
-    # the overlay deliberately has no title bar or close button. ---
-    tray = QSystemTrayIcon(make_tray_icon())
-    tray.setToolTip("iRacing SR Estimator")
-    menu = QMenu()
-    action_toggle = QAction("Mostrar/Ocultar (F8)")
-    action_toggle.triggered.connect(window.toggle_visibility)
-    action_lock = QAction("Travar/Destravar posicao (F9)")
-    action_lock.triggered.connect(on_toggle_lock)
-    action_mode = QAction("Alternar modo (F10)")
-    action_mode.triggered.connect(on_cycle_mode)
-    action_quit = QAction("Sair")
-    action_quit.triggered.connect(app.quit)
-    menu.addAction(action_toggle)
-    menu.addAction(action_lock)
-    menu.addAction(action_mode)
-    menu.addSeparator()
-    menu.addAction(action_quit)
-    tray.setContextMenu(menu)
-    tray.show()
+    if hotkeys is None or not hotkeys.available:
+        # Usually iRacing running elevated while this app is not: Windows will
+        # not deliver a keyboard hook across privilege levels. Force the overlay
+        # unlocked so its header bar - drag handle, lock and close buttons - is
+        # on screen. Otherwise the user is left with a panel they can neither
+        # move nor close.
+        logger.warning(
+            "No global hotkey could be registered. Leaving the overlay unlocked so it "
+            "can still be moved and closed with the mouse; run this app as Administrator "
+            "if iRacing is elevated."
+        )
+        if window.locked:
+            window.set_locked(False)
+
+    def hotkey_hint(key: str) -> str:
+        """Only advertise a key in the menu if it actually bound."""
+        return f"\t{key}" if hotkeys is not None and key in hotkeys.registered else ""
+
+    # --- system tray: the recovery path, and the tidiest way to quit. The
+    # overlay also carries its own close button whenever it is unlocked. ---
+    tray: Optional[QSystemTrayIcon] = None
+    if QSystemTrayIcon.isSystemTrayAvailable():
+        tray = QSystemTrayIcon(make_tray_icon())
+        tray.setToolTip("Nishizumi SR - estimated Safety Rating")
+        menu = QMenu()
+        actions = [
+            (f"Show / hide overlay{hotkey_hint(app_settings.hotkeys.toggle_overlay)}",
+             window.toggle_visibility),
+            (f"Lock / unlock position{hotkey_hint(app_settings.hotkeys.toggle_lock)}",
+             window.toggle_lock),
+            (f"Cycle display mode{hotkey_hint(app_settings.hotkeys.cycle_mode)}",
+             on_cycle_mode),
+            ("Reset position", reset_overlay),
+        ]
+        for label, slot in actions:
+            action = QAction(label, menu)
+            action.triggered.connect(slot)
+            menu.addAction(action)
+        menu.addSeparator()
+        action_quit = QAction("Quit Nishizumi SR", menu)
+        action_quit.triggered.connect(app.quit)
+        menu.addAction(action_quit)
+        tray.setContextMenu(menu)
+
+        def on_tray_activated(reason) -> None:
+            # Left click or double click is the "I have lost the overlay" gesture.
+            if reason in (QSystemTrayIcon.Trigger, QSystemTrayIcon.DoubleClick):
+                reset_overlay()
+
+        tray.activated.connect(on_tray_activated)
+        tray.show()
+    else:
+        # Rare, but it used to mean the app had no quit path at all.
+        logger.warning(
+            "No system tray is available. Use the close button on the unlocked "
+            "overlay to quit."
+        )
+        if window.locked:
+            window.set_locked(False)
 
     def finalize_session(estimate: SREstimate) -> None:
         if state.session_meta is None or state.session_meta.session_type == "practice":
@@ -336,9 +437,27 @@ def main() -> None:
 
         window.set_content(render(estimate))
 
+    def safe_tick() -> None:
+        """Contain anything the tick throws.
+
+        PySide6 terminates the process on an unhandled exception raised inside
+        a slot called from C++. In a windowed build that means the overlay just
+        disappears and the traceback goes nowhere. One bad telemetry read is
+        not worth losing the session over, so it is logged and polling
+        continues.
+        """
+        try:
+            tick()
+        except Exception:
+            state.tick_errors += 1
+            if state.tick_errors <= MAX_LOGGED_TICK_ERRORS:
+                logger.exception("Unhandled error while polling")
+                if state.tick_errors == MAX_LOGGED_TICK_ERRORS:
+                    logger.error("Further polling errors will not be logged")
+
     timer = QTimer()
     timer.setInterval(app_settings.poll_interval_ms)
-    timer.timeout.connect(tick)
+    timer.timeout.connect(safe_tick)
     timer.start()
 
     def cleanup() -> None:
@@ -346,11 +465,19 @@ def main() -> None:
             hotkeys.shutdown()
         persist_overlay_state()
         sdk.shutdown()
+        if tray is not None:
+            tray.hide()   # otherwise Windows leaves a ghost icon until hovered
+        if state.tick_errors:
+            logger.warning("Polling errors this run: %s", state.tick_errors)
         logger.info("Application closed")
 
     app.aboutToQuit.connect(cleanup)
 
-    logger.info("Nishizumi SR started")
+    logger.info(
+        "Nishizumi SR started - overlay is %s. Close it with the X button when "
+        "unlocked, or from the tray icon.",
+        "locked (click-through)" if window.locked else "unlocked (draggable)",
+    )
     sys.exit(app.exec())
 
 

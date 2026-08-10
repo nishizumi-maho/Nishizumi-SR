@@ -8,6 +8,11 @@
 Both use **exactly the same formula** — verified case by case, the two
 implementations agree to four decimal places.
 
+> 🔌 **Building an overlay?** [`docs/INTEGRATION.md`](docs/INTEGRATION.md) is a
+> guide to putting this estimator in your own — drop-in JavaScript and C# ports,
+> the five SDK fields you need, and 441 golden test vectors to check a port
+> against. MIT licensed.
+>
 > 📐 **[`docs/MODEL.md`](docs/MODEL.md) is the mathematical description of the
 > model** — the equations, their derivation, and the measured constants.
 >
@@ -70,7 +75,21 @@ A semi-transparent panel appears at the top-left of the screen. While iRacing is
 closed or no valid session exists, the overlay shows `Waiting for iRacing...` /
 `Waiting for session...` rather than a made-up number.
 
-There is no title bar by design, so close it from the **system tray icon** → Exit.
+### Moving and closing it
+
+The overlay has two states, and it starts **unlocked** on a fresh install:
+
+| | Unlocked | Locked |
+|---|---|---|
+| Border | green | faint grey |
+| Header bar | visible: `mode`, `lock`, `✕` | hidden |
+| Mouse | drag the panel from anywhere on it | passes straight through to iRacing |
+
+So: **drag it anywhere you like, then press `lock`** (or `F9`) to make it
+click-through for driving. The position and the lock state are both remembered.
+
+To close it, click the **`✕`** on the header bar, or use the tray icon →
+*Quit Nishizumi SR*. Right-clicking the unlocked panel opens the same menu.
 
 ### Hotkeys
 
@@ -80,11 +99,20 @@ There is no title bar by design, so close it from the **system tray icon** → E
 | `F9` | lock / unlock (unlocked = drag to reposition; locked = click-through) |
 | `F10` | cycle the three modes: compact / normal / detailed |
 
-Configurable in `config/settings.json` → `hotkeys`. If hotkey registration fails,
-the app keeps working and the same controls remain on the tray icon.
+Configurable in `config/settings.json` → `hotkeys`.
 
 > **Platform note:** if iRacing runs as Administrator, this app must too, or
 > Windows will not deliver the global keyboard hook across privilege levels.
+> If no hotkey can be registered the app says so in the log and **leaves the
+> overlay unlocked**, so the header bar is always there to move and close it.
+
+### If you lose the overlay
+
+Left-click the tray icon (the green **SR** disc). That single action un-hides
+the overlay, pulls it back to the top-left corner and unlocks it — which covers
+every way it can go missing: hidden with `F8`, locked and forgotten, or parked
+on a monitor that is no longer plugged in. The same thing is on the tray menu as
+*Reset position*.
 
 ### Trying it in iRacing
 
@@ -233,8 +261,12 @@ config/                   # settings load/save
 docs/
     MODEL.md              # the mathematics: equations, derivation, constants
     RESEARCH.md           # facts vs. hypotheses, and how the data was obtained
+    INTEGRATION.md        # guide for third-party overlays adding this estimator
+    integration/          # vendorable JS + C# ports, golden vectors, verifiers
     index.html            # the web calculator
     tracks.json           # track data for the web page
+
+tests/                    # headless overlay + end-to-end tests (no iRacing needed)
 
 tools/
     analyse.py            # held-out analysis of the full dataset
@@ -260,19 +292,30 @@ python -m sr.calibration
 ```
 
 This reports mean error, mean absolute error and a confidence level, and
-suggests a new `window_corners`. It never recalibrates itself silently during a
+suggests a new `window_band1`. It never recalibrates itself silently during a
 session — that is deliberate, so the estimate stays auditable.
 
-The shipped default (`window_corners = 2150`, `alpha_max = 0.34`) comes from 198
-independent driver-sessions. Fitting a single driver's own races tends to land
-lower (around 1650), which is exactly what this command personalises.
+The shipped default (`window_band1 = 1060`, ×√2 per band, ×0.69 Rookie / ×0.83
+Class D) comes from the 123,361-session fit in §4. Fitting a single driver's own
+races tends to land lower, which is exactly what this command personalises: put
+the suggested number in `config/settings.json` → `model`.
+
+**A personal calibration lasts until the shipped model changes.** `settings.json`
+carries a fingerprint of the model constants it was written against. When a new
+release changes them, the old block is dropped, the shipped values are used and
+the log says so — otherwise an upgraded app would quietly keep computing last
+release's answer. Re-run `python -m sr.calibration` afterwards to personalise
+again. The log line `Model v4 [<fingerprint>]: window_band1=…` at startup always
+tells you exactly which constants are live.
 
 ## 7. Known limitations
 
-- **The rolling window is not solved.** A fixed window fails on long races, so a
-  single session's weight is capped at `alpha_max ≈ 1/3`. That cap replicated
-  across two independent samples but has no official source. Expect roughly
-  ±0.11 SR on normal sessions and ±0.19 on very long or team endurance races.
+- **The rolling average is measured, not derived.** The EMA shape and the √2
+  band progression were solved against 123,361 driver-sessions and hold across
+  the whole observed range, but iRacing has never published the formula, so the
+  window remains the one fitted part of the pipeline. Held out, the error is
+  0.033 SR on average and within 0.05 SR 88% of the time — the app therefore
+  says **Estimated** Safety Rating, and always will.
 - **Team endurance events** are the weakest case: per-driver laps and the car's
   CPI do not line up perfectly.
 - **MPR is not shown.** It is not exposed by the telemetry SDK.

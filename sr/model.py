@@ -46,13 +46,23 @@ gave two results that the earlier model had wrong:
   cap near 1/3 to stop long races blowing up. That cap was an artifact of
   fitting a fixed window to nine races.
 
-Fitted: window_band1 = 1050 corners, ratio = 1.4142 (sqrt 2) per band, giving
-windows of 1050 / 1485 / 2100 / 2970 corners for the 1.xx to 4.xx bands.
-Giving each band its own free window converges onto exactly that geometric
-progression, so the law is real rather than imposed.
+That first fit gave window_band1 = 1050 corners with a ratio of 1.4142 (sqrt 2)
+per band. Giving each band its own free window converges onto exactly that
+geometric progression, so the law is real rather than imposed.
 Accuracy over the 10,773 sessions: 1.4% RMSE on the predicted CPI, 0.026 SR
 mean absolute error, 6.5% of predictions off by more than 0.05 SR. The old
 linear-plus-cap form scored 9.2% / 0.090 SR / 51% on the same data.
+
+WHAT IS ACTUALLY SHIPPED
+The constants in SRModelParams below, not the ones above: window_band1 = 1060
+with the same sqrt(2) ratio, plus the Rookie (0.69) and Class D (0.83) factors.
+They come from the later, much larger fit over 123,361 driver-sessions, which
+also produced the per-class factors the 10,773-session fit could not resolve.
+Held out on a random half of that set: 2.90% CPI error, 0.033 SR mean absolute
+error, 88% within 0.05 SR. See docs/MODEL.md section 9.
+
+config/settings.py stamps these values into settings.json, so a file written by
+an older build cannot silently keep an app running last release's constants.
 
 KNOWN LIMITATION
 Corners are counted from laps in offline validation, so a driver who pits and
@@ -89,12 +99,13 @@ SESSION_WEIGHTS = {
 
 @dataclass
 class SRModelParams:
-    """Fitted to 10,773 driver-sessions from official iRacing results.
+    """The shipped constants: fitted to 123,361 driver-sessions, held out on half.
 
     `window_band1` is the EMA decay constant, in corners, for drivers sitting in
     the 1.xx SR band; `window_band_ratio` multiplies it for each band above that.
-    Both came out of a joint fit over sprint (GT Sprint Series) and endurance
-    (Production / Global / GT Endurance) races - see docs/RESEARCH.md 9.5.
+    The earlier 10,773-session fit over sprint and endurance races (docs/
+    RESEARCH.md 9.5) agreed on the shape and the ratio; the larger set moved
+    window_band1 from 1050 to 1060 and resolved the Rookie and Class D factors.
     """
     window_band1: float = 1060.0
     window_band_ratio: float = 1.4142  # sqrt(2)
