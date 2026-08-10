@@ -2,6 +2,7 @@
 # docs/RESEARCH.md and docs/MODEL.md; the raw per-session history is personal.
 data/*
 !data/calibration_set.json
+!data/calibration_set_123k.json.gz
 logs/
 docs/RESULTS_SCRAPE_NOTES.md
 

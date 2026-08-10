@@ -56,14 +56,14 @@ $$\boxed{\; S \;=\; b \;+\; a \ln\!\left(\frac{P}{\Phi(\kappa, b)}\right) \;}$$
 where $\Phi(\kappa,b)$ is the CPI at the *floor* of that band — the CPI for which
 the band displays exactly $b.00$.
 
-Fitted over 14,231 observations:
-
 $$a = 1.5236$$
 
-Mean absolute error **0.0093 SR**. For context the site only displays two
-decimals, so ~0.005 is the observational floor. Re-fitting freely across the
-whole licence range moves $a$ by less than 0.5% and *improves* MAE only to
-0.0091, so these constants are effectively at the optimum.
+Held-out mean absolute error **0.0098 SR** over 58,842 observations. For context
+the site only displays two decimals, so ~0.005 is the observational floor.
+
+These constants are not merely tuned: re-fitting them on a training half and
+scoring on the held-out half produces a *worse* result (0.0101 against 0.0098).
+A refit chases noise the shipped values do not.
 
 ### 3.2 The floor is a single geometric ladder
 
@@ -169,16 +169,22 @@ This is what turns the update from guesswork into measurement.
 
 ### 5.3 The weighting is exponential
 
-Binning the solved $\alpha$ against $c/W$ over 13,849 sessions:
+Binning the solved $\alpha$ against $c/W$ over the 102,787 sessions where it is
+solvable:
 
-| $c/W$ | $\alpha$ measured | $1 - e^{-c/W}$ |
-|---|---|---|
-| 0.20 | 0.201 | 0.181 |
-| 0.30 | 0.284 | 0.259 |
-| 0.52 | 0.446 | 0.405 |
-| 0.93 | 0.646 | 0.606 |
-| 1.90 | 0.878 | 0.850 |
-| 2.93 | 0.964 | 0.947 |
+| $c/W$ | n | $\alpha$ measured | $1 - e^{-c/W}$ |
+|---|---|---|---|
+| 0.09 | 64,675 | 0.086 | 0.087 |
+| 0.18 | 20,677 | 0.175 | 0.168 |
+| 0.29 | 5,666 | 0.259 | 0.251 |
+| 0.42 | 4,334 | 0.350 | 0.343 |
+| 0.61 | 4,049 | 0.467 | 0.458 |
+| 0.89 | 2,308 | 0.601 | 0.590 |
+| 1.43 | 801 | 0.764 | 0.760 |
+| 2.53 | 277 | 0.920 | 0.920 |
+
+The law is not approximately right over part of the range — it tracks the
+measurement across a factor of thirty in $c/W$.
 
 Linear for small $c/W$, saturating smoothly — the signature of an exponentially
 weighted moving average over corners, not a fixed window:
@@ -186,8 +192,8 @@ weighted moving average over corners, not a fixed window:
 $$\boxed{\;\alpha \;=\; 1 - e^{-c/W}\;}$$
 
 An earlier version of this project used $\alpha = \min(\tfrac13, c/W)$. That cap
-was an artifact of fitting a fixed window to nine races; on the full data it
-scores 9.2% CPI error against 1.21% for the exponential form.
+was an artifact of fitting a fixed window to nine races, and it disappears
+entirely once there is enough data to see the curve above.
 
 ### 5.4 The decay constant $W$
 
@@ -385,11 +391,23 @@ half a lap on a road course closes most of the gap.
 ## 10. Reproducing this
 
 ```bash
-python tools/fit_model.py
+python tools/analyse.py      # the full held-out analysis behind section 9
+python tools/fit_model.py    # the narrower earlier fit
 ```
 
-Reads `data/calibration_set.json` — the anonymous dataset behind every number
-above — and re-runs the fit. The file contains only the physical quantities the
-model needs: corners, incident points, CPI before and after, SR before and
-after, band and class index. No customer IDs, driver names, subsession IDs,
-track IDs, series IDs or dates.
+Both read the anonymous datasets shipped in `data/`:
+
+| file | rows | format |
+|---|---|---|
+| `calibration_set_123k.json.gz` | 123,361 | columnar, gzipped (2.2 MB) |
+| `calibration_set.json` | 13,849 | one object per row |
+
+They contain only the physical quantities the model needs — corners, incident
+points, CPI before and after, SR before and after, band, licence class, licence
+category, strength of field, a team-event flag, corners per lap and lap count.
+
+No customer IDs, driver names, subsession IDs, series IDs, track IDs, dates or
+finishing positions. Strength of field is rounded to the nearest 50 so it cannot
+serve as a join key back to a specific race. `tools/dataset.py` reads either
+file; the assembly script asserts the field list before writing, so an
+identifying column cannot be added by accident.

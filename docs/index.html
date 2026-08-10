@@ -83,10 +83,10 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
 <header>
   <h1>Nishizumi <span>SR</span></h1>
   <p class="sub">Work out what a session will do to your iRacing Safety Rating —
-  before you drive it. The CPI→SR mapping here was reconstructed from iRacing's
-  own <code>old_cpi</code>/<code>new_cpi</code> data, fitted against
-  <strong>13,849 real driver-sessions</strong>, and typically lands within
-  <strong>0.01–0.02 SR</strong> of the official result.</p>
+  before you drive it. The model is a reconstruction of iRacing's own algorithm,
+  built from its <code>old_cpi</code>/<code>new_cpi</code> data and validated
+  against <strong>123,361 driver-sessions</strong> from 7,598 official races
+  across every series in the season.</p>
 </header>
 
 <div class="grid">
@@ -252,20 +252,52 @@ window = 1060 x √2^(band-1) x class factor</pre>
   <p>All of this was measured, not assumed. Within Class C, B, A and Pro the window
   depends <strong>only on the SR band, not on the class</strong> — at band 3 the
   medians are C 2451, B 2342, A 2448 corners. Rookie and Class D are genuinely
-  shorter, so new drivers' SR moves faster. Letting each band take its own free
-  value converges onto exactly the √2 progression.</p>
-  <p>Fitted against <strong>13,849 driver-sessions</strong> across every licence
-  class and category: <strong>1.21% error on the predicted CPI</strong>, mean
-  absolute error <strong>0.023 SR</strong>, and <strong>72%</strong> of results
-  within 0.02 SR. Short races are the least precise, because iRacing counts the
-  distance actually driven while results only report whole laps.</p>
+  shorter, so new drivers' SR moves faster.</p>
+
+  <h3>How well it holds up</h3>
+  <p>Validated against <strong>123,361 driver-sessions</strong> from 7,598 official
+  races, covering every series in the season with official racing, in all five
+  licence categories. Fitted on a random half and scored on the other half, so
+  nothing below is a model grading its own homework.</p>
+  <table><thead><tr><th>Metric</th><th>Held-out result</th></tr></thead><tbody>
+  <tr><td>CPI prediction error</td><td>2.90%</td></tr>
+  <tr><td>SR mean absolute error</td><td>0.033</td></tr>
+  <tr><td>within 0.02 SR</td><td>64%</td></tr>
+  <tr><td>within 0.05 SR</td><td>88%</td></tr>
+  </tbody></table>
+  <p>Re-fitting every constant on the training half did <strong>not</strong> beat
+  the shipped values. Left completely free, the band ratio converged to
+  <strong>1.4141</strong> — √2 to four decimals, from data never used to choose
+  it. And the exponential weighting tracks the measurement across a factor of
+  thirty in session size:</p>
+  <table><thead><tr><th>corners / window</th><th>α measured</th><th>1 − e<sup>−x</sup></th></tr></thead>
+  <tbody>
+  <tr><td>0.09</td><td>0.086</td><td>0.087</td></tr>
+  <tr><td>0.42</td><td>0.350</td><td>0.343</td></tr>
+  <tr><td>0.89</td><td>0.601</td><td>0.590</td></tr>
+  <tr><td>2.53</td><td>0.920</td><td>0.920</td></tr>
+  </tbody></table>
+
+  <h3>Why your number may differ slightly</h3>
+  <p>The largest remaining error is not the algorithm — it is lap counting.
+  Results pages report <em>whole laps</em>, while iRacing scores the distance you
+  actually drove: the part-lap past the line, the run to the checkered, the
+  out-lap. On a road course that is worth roughly half a lap to a lap.</p>
+  <p>So if you are checking this calculator against a past result, <strong>add
+  about half a lap</strong> on a road course and it will line up. The desktop
+  overlay does not have this problem at all — it measures distance directly.</p>
   <p>Practice sessions only count when they are part of a Ranked race event.
   Standalone Open Practice does not affect SR at all.</p>
 </details>
 
 <footer>
   Not affiliated with iRacing. Estimates only — always trust the official result.
-  <br><a href="https://github.com/nishizumi-maho/Nishizumi-SR">Source &amp; the desktop overlay on GitHub</a>
+  <br>
+  <a href="https://github.com/nishizumi-maho/Nishizumi-SR">Source &amp; desktop overlay</a> ·
+  <a href="https://github.com/nishizumi-maho/Nishizumi-SR/blob/main/docs/MODEL.md">The mathematics</a> ·
+  <a href="https://github.com/nishizumi-maho/Nishizumi-SR/releases/latest">Download the overlay</a>
+  <br><span style="font-size:.92em">The 123,361-session dataset behind the model is
+  published too — anonymous, no driver or race identifiers.</span>
 </footer>
 </div>
 

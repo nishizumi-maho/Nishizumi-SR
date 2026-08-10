@@ -26,25 +26,24 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-DEFAULT = ROOT / "data" / "calibration_set_full.json"
+from tools.dataset import FULL, SMALL, load as load_rows
 
 SQRT2 = math.sqrt(2.0)
 
 
 # ---------------------------------------------------------------- loading
-def load(path: Path):
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    rows = raw["rows"]
+def load(path: Path | None):
+    rows, meta = load_rows(path)
     d = {}
     for k in ("c", "i", "oc", "nc", "s0", "s1", "b", "k"):
         d[k] = np.array([r[k] for r in rows], dtype=float)
-    for k in ("cat", "sof", "team"):
+    for k in ("cat", "sof", "team", "cpl", "laps"):
         d[k] = np.array([r.get(k, -1) for r in rows], dtype=float)
     d["s0"] /= 100.0
     d["s1"] /= 100.0
     d["b"] = d["b"].astype(int)
     d["k"] = d["k"].astype(int)
-    return d, raw.get("_meta", {})
+    return d, meta
 
 
 def split(d, frac=0.5, seed=7):
@@ -118,13 +117,13 @@ def fit_window(d, ratio=None):
 
 # ------------------------------------------------------------------ main
 def main():
-    path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT
+    path = Path(sys.argv[1]) if len(sys.argv) > 1 else None
     d, meta = load(path)
     n = len(d["c"])
     tr, te = split(d)
 
     print("=" * 76)
-    print(f"1  DATA   {n:,} driver-sessions   ({path.name})")
+    print(f"1  DATA   {n:,} driver-sessions")
     print("=" * 76)
     for k, name in enumerate("RDCBAP"):
         m = (d["k"] == k).sum()

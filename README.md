@@ -168,6 +168,11 @@ entirely; if you compare the *calculator* against a past result on a road course
 adding half a lap closes most of the gap. Full detail in
 [`docs/MODEL.md`](docs/MODEL.md) §9.
 
+Reproduce all of it with `python tools/analyse.py`, which reads the anonymous
+123,361-session dataset shipped in `data/calibration_set_123k.json.gz` (2.2 MB).
+It holds only physical quantities — no customer IDs, driver names, subsession
+IDs, series IDs, track IDs or dates.
+
 ### Corners per lap
 
 The **official** iRacing value is used: `tracks/official_corners.json` holds
@@ -232,10 +237,14 @@ docs/
     tracks.json           # track data for the web page
 
 tools/
-    fit_model.py          # offline refit against the calibration set
+    analyse.py            # held-out analysis of the full dataset
+    fit_model.py          # the earlier narrower refit
+    dataset.py            # loader for both calibration sets
+    update_tracks.py      # refresh the official corner table
 
 data/
-    calibration_set.json  # 13,849 anonymous driver-sessions (no identifiers)
+    calibration_set_123k.json.gz   # 123,361 anonymous driver-sessions
+    calibration_set.json           # 13,849, the earlier narrower set
 ```
 
 ## 6. Calibrating against your own results
