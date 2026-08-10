@@ -4,9 +4,11 @@ A complete mathematical description of how Nishizumi SR predicts an iRacing
 Safety Rating change.
 
 iRacing has never published its formula. What follows is a *reconstruction*,
-fitted to **13,849 anonymous driver-sessions** taken from public official race
-results. Where a quantity is exact it is marked as such; where it is fitted, the
-residual error is stated.
+derived from public official race results and validated against **123,361
+driver-sessions** drawn from 7,598 official races across every series in the
+season, in all five licence categories, scored on a held-out split. Where a
+quantity is exact it is marked as such; where it is fitted, the residual error
+is stated.
 
 ---
 
@@ -292,45 +294,93 @@ W_1 = 1060,\quad \rho = \sqrt2,\quad f = (0.69, 0.83, 1, 1, 1, 1)$$
 
 ## 9. Accuracy
 
-Against 13,849 anonymous driver-sessions from public official results:
+Validated against **123,361 driver-sessions** from 7,598 official races, sampled
+across every series in the season that had official races, in all five licence
+categories. The model was fitted on a random half and scored on the other half —
+so nothing below is a model grading its own homework.
 
-| Quantity | Error |
+| Quantity | Held-out result |
 |---|---|
-| Rendering map $P \mapsto S$ | MAE **0.0093 SR** |
-| Predicted CPI $P'$ | RMSE **1.21%** |
-| Predicted SR $S'$ | MAE **0.0233 SR**, RMSE 0.064 |
-| Within 0.01 SR | 44.9% |
-| Within 0.02 SR | 72.4% |
+| Rendering map $P \mapsto S$ | MAE **0.0099 SR**, p99 0.048 |
+| Predicted CPI $P'$ | RMSE **2.90%** |
+| Predicted SR $S'$ | MAE **0.0329 SR** |
+| Exact to 2 decimals | 20.1% |
+| Within 0.01 SR | 38.0% |
+| Within 0.02 SR | 64.2% |
+| Within 0.05 SR | 88.4% |
 
-By licence class:
+### The constants are already optimal
 
-| Class | n | MAE | within 0.02 |
-|---|---|---|---|
-| Rookie | 445 | 0.0161 | 84.3% |
-| D | 1139 | 0.0234 | 72.1% |
-| C | 1169 | 0.0227 | 75.4% |
-| B | 3962 | 0.0253 | 66.7% |
-| A | 7134 | 0.0227 | 74.3% |
+Re-fitting every constant on the training half and scoring on the held-out half
+did **not** beat the shipped values:
 
-### Where the residual comes from
+| Model | Held-out CPI RMSE |
+|---|---|
+| **Shipped** $W_1{=}1060$, ratio $\sqrt2$, $f{=}(0.69,0.83,1)$ | **2.899%** |
+| Refit, ratio free | 2.899% |
+| Refit, ratio pinned to $\sqrt2$ | 2.899% |
+| No class factor ($f \equiv 1$) | 2.946% |
+| No band scaling (flat window) | 5.388% |
 
-- **Not** the rendering map: starting from the exact official `old_cpi` instead
-  of inverting the rounded SR barely helps (0.0267 → 0.0270 MAE).
-- **Whole-lap reporting.** Error falls monotonically with race length — 0.046 SR
-  at 1–4 laps, 0.027 at 8–25, 0.018 at 60+. Results report completed laps, while
-  iRacing scores the distance actually driven. The live overlay reads
-  `LapDistPct` and does not have this limitation; the web calculator does,
-  because you type whole laps into it.
+Two things are worth drawing out. Left completely free, the band ratio converged
+to **1.4141** — $\sqrt2$ to four decimals, from 123k sessions that had never
+been used to choose it. And the rendering map's shipped constants *beat* a fresh
+refit on held-out data (0.0099 vs 0.0101 MAE), which is the behaviour of
+constants that are right rather than merely tuned.
 
-### What remains unknown
+Dropping band scaling nearly doubles the error, so that part of the structure is
+carrying real weight, not decoration.
 
-- Whether $W_1 = 1060$ and the $\sqrt2$ ratio are exact or merely very good fits.
-- Why Rookie and Class D windows are shorter — a deliberate design choice, or an
-  artifact of those drivers simply having less history for the average to work
-  with.
+### Where the remaining error lives
+
+The residual is **not** randomly distributed — it is dominated by one thing, and
+it is an artifact of the data source rather than of iRacing's algorithm.
+
+Every bucket showed the same small negative bias (about −0.9% on predicted CPI),
+regardless of category, licence class or strength of field. A uniform bias like
+that is a missing constant, so it can be chased down. Correcting the corner count
+multiplicatively helped a little; correcting it *additively* helped much more and
+almost eliminated the bias (−0.84% → −0.09%). Splitting that offset by track
+type showed what it really is:
+
+| corners/lap | best offset | in laps |
+|---|---|---|
+| 6–9 | +9 | 1.17 |
+| 10–13 | +13 | 1.13 |
+| 14–17 | +15.5 | 0.99 |
+| 18–23 | +19 | 0.94 |
+| 4–5 (ovals) | −4 | −1.0 |
+
+**It is one lap.** Results report `laps_complete` as a whole number, while
+iRacing scores the distance actually driven — the part-lap past the line, the
+run to the checkered, the out-lap. On road courses that is worth roughly half a
+lap to a lap more than the reported count; on ovals the bookkeeping runs the
+other way.
+
+This is deliberately **not** compensated for in the model:
+
+* The **overlay** never has the problem. It integrates `LapDistPct` and counts
+  the distance actually driven, so it needs no correction — the correction exists
+  only to undo a limitation of reading whole laps off a results page.
+* Fitting per-category lap offsets does improve the offline numbers (MAE 0.0329 →
+  0.0279, within-0.02 64% → 72%), but the fitted values are incoherent as physics
+  — Oval **+2.45** laps against Dirt Oval **−2.0**. That is lap-count bookkeeping,
+  not a property of the algorithm, and baking it in would also break the
+  guarantee that the overlay and the web calculator agree exactly.
+
+If you are comparing the calculator against a past result page, adding roughly
+half a lap on a road course closes most of the gap.
+
+### What is still unknown
+
+- Whether $W_1 = 1060$ and the $\sqrt2$ ratio are exact or very good fits.
+  Twelve times the data has not moved either.
+- Why Rookie and Class D windows are shorter — a deliberate choice, or simply
+  that those drivers have less history for the average to work with.
+- Dirt Oval carries about five times the residual scatter of every other category
+  (6.6% against 1.2–1.5%). Heat-race formats aggregate differently, which is the
+  most likely cause, but it is unconfirmed.
 - MPR thresholds, which are not exposed anywhere.
-
----
 
 ## 10. Reproducing this
 

@@ -146,22 +146,27 @@ Two facts here were measured against 10,773 driver-sessions, not assumed:
   (x from 0.06 to 2.9). Letting each band take its own free window converges onto
   exactly the √2 progression above, so the law is real rather than imposed.
 
-Accuracy over **13,849 driver-sessions** spanning every licence class and
-category:
+Validated against **123,361 driver-sessions** from 7,598 official races, covering
+every series in the season with official racing, in all five licence categories.
+Fitted on a random half, scored on the other half:
 
-| metric | value |
+| metric | held-out result |
 |---|---|
-| CPI prediction error | **1.21%** |
-| SR mean absolute error | **0.023** |
-| within 0.02 SR | **72.4%** |
-| within 0.01 SR | 44.9% |
+| CPI prediction error | **2.90%** |
+| SR mean absolute error | **0.033** |
+| within 0.02 SR | **64%** |
+| within 0.05 SR | **88%** |
 
-Reproduce it with `python tools/fit_model.py`, which reads the anonymous
-calibration set shipped in `data/calibration_set.json`.
+Re-fitting every constant on the training half did **not** beat the shipped
+values, and left completely free the band ratio converged to **1.4141** — √2 to
+four decimals, from data never used to choose it.
 
-Short races are the least precise: iRacing counts distance actually driven, while
-results only report whole laps. Running live, the overlay measures distance
-directly and does not have that limitation.
+The residual is dominated by one thing, and it is not the algorithm: results
+pages report whole laps while iRacing scores the distance actually driven, worth
+roughly half a lap to a lap. The overlay integrates `LapDistPct` and so avoids it
+entirely; if you compare the *calculator* against a past result on a road course,
+adding half a lap closes most of the gap. Full detail in
+[`docs/MODEL.md`](docs/MODEL.md) §9.
 
 ### Corners per lap
 
