@@ -25,7 +25,9 @@ from typing import Optional
 
 logger = logging.getLogger("sr_estimator.history")
 
-DEFAULT_PATH = Path(__file__).resolve().parent.parent / "data" / "history.json"
+from app_paths import user_file
+
+DEFAULT_PATH = user_file("data", "history.json")
 
 
 @dataclass
@@ -61,7 +63,7 @@ class HistoryStore:
         try:
             self._records = json.loads(self._path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as exc:
-            logger.error("Falha ao ler history.json (%s), comecando vazio", exc)
+            logger.error("Could not read history.json (%s); starting empty", exc)
             self._records = []
 
     def _save(self) -> None:
@@ -94,7 +96,7 @@ class HistoryStore:
         pending["reconciled"] = True
         self._save()
         logger.info(
-            "Sessao reconciliada: estimado %+.2f | real %+.2f | erro %.2f",
+            "Session reconciled: estimated %+.2f | actual %+.2f | error %.2f",
             pending["estimated_delta"], actual_delta, error,
         )
         return pending

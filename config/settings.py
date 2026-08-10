@@ -13,7 +13,10 @@ from pathlib import Path
 
 logger = logging.getLogger("sr_estimator.config")
 
-SETTINGS_PATH = Path(__file__).resolve().parent / "settings.json"
+from app_paths import user_file
+
+# Writable: lives beside the code from source, in %LOCALAPPDATA% when frozen.
+SETTINGS_PATH = user_file("config", "settings.json")
 
 
 def _known_fields(cls, data: dict) -> dict:

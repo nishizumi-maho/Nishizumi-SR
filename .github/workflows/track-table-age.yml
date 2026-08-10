@@ -1,0 +1,76 @@
+name: Track table age
+
+# The corners-per-lap table comes from an authenticated iRacing endpoint, so it
+# cannot be refreshed unattended (see docs/UPDATING_TRACKS.md). Instead of
+# pretending to automate it, this job just watches the clock and opens an issue
+# when the table is old enough to be worth a look.
+#
+# Nothing breaks while it is stale: the overlay learns unknown tracks from the
+# simulator, and the web calculator accepts a manual corner count.
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"        # 09:00 UTC on the 1st of each month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-age:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Measure table age
+        id: age
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, datetime, pathlib
+          meta = json.loads(pathlib.Path("tracks/official_corners.json").read_text())["_meta"]
+          captured = datetime.date.fromisoformat(meta["captured_utc"])
+          days = (datetime.date.today() - captured).days
+          n = len(json.loads(pathlib.Path("tracks/official_corners.json").read_text())["tracks"])
+          print(f"days={days}")
+          print(f"captured={captured}")
+          print(f"tracks={n}")
+          print(f"stale={'true' if days > 120 else 'false'}")
+          PY
+
+      - name: Summary
+        run: |
+          echo "Track table captured ${{ steps.age.outputs.captured }}" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.age.outputs.tracks }} tracks, ${{ steps.age.outputs.days }} days old" >> $GITHUB_STEP_SUMMARY
+
+      - name: Open a refresh issue
+        if: steps.age.outputs.stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const days = "${{ steps.age.outputs.days }}";
+            const captured = "${{ steps.age.outputs.captured }}";
+            const title = "Refresh the track corners table";
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: "open", labels: "track-table"
+            });
+            if (open.length) {
+              core.info("A refresh issue is already open; nothing to do.");
+              return;
+            }
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title, labels: ["track-table"],
+              body: [
+                `The corners-per-lap table was captured on **${captured}** — ${days} days ago.`,
+                ``,
+                `iRacing has probably added or reworked layouts since then.`,
+                ``,
+                `Refresh it with the two steps in [docs/UPDATING_TRACKS.md](../blob/main/docs/UPDATING_TRACKS.md):`,
+                `export from a logged-in browser, then \`python tools/update_tracks.py <export>\`.`,
+                ``,
+                `Not urgent — the overlay already learns unknown tracks from the simulator,`,
+                `and the web calculator accepts a manual corner count.`
+              ].join("\n")
+            });

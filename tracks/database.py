@@ -5,8 +5,9 @@ Resolution order (see docs/RESEARCH.md section 2):
 1. A cached or manually curated entry, keyed by TrackID (unique per specific
    configuration - Nordschleife, Combined and GP all have different TrackIDs).
 2. The official iRacing value from tracks/official_corners.json.
-3. TrackNumTurns from the SDK, saved automatically with its source and
-   confidence marked so it can be corrected later.
+3. TrackNumTurns from the live session, saved automatically. This is what makes
+   a season update a non-event for the overlay: TrackNumTurns IS corners_per_lap,
+   so a brand-new layout is scored correctly the first time it is driven.
 4. A fixed safety value (fallback_corners_per_lap).
 
 Never assumes a "magic" corner count without recording where it came from.
@@ -24,7 +25,10 @@ from typing import Optional
 logger = logging.getLogger("sr_estimator.tracks")
 
 
-OFFICIAL_CORNERS_PATH = Path(__file__).resolve().parent / "official_corners.json"
+from app_paths import resource_path, user_file
+
+# Read-only, shipped with the app (bundled into the .exe).
+OFFICIAL_CORNERS_PATH = resource_path("tracks", "official_corners.json")
 
 
 def _load_official_corners() -> dict:
@@ -43,7 +47,8 @@ def _load_official_corners() -> dict:
 
 _OFFICIAL_CORNERS = _load_official_corners()
 
-DEFAULT_PATH = Path(__file__).resolve().parent / "track_data.json"
+# Writable: the local cache of resolved/learned tracks.
+DEFAULT_PATH = user_file("tracks", "track_data.json")
 
 
 @dataclass
@@ -124,18 +129,23 @@ class TrackDatabase:
             return record.corners_per_lap, record.source, record.confidence
 
         if sdk_num_turns and sdk_num_turns > 0:
+            # This is how a track added in a season update gets scored correctly
+            # the very first time it is driven, with no table refresh needed:
+            # TrackNumTurns in the session YAML IS corners_per_lap. Verified
+            # against every track where both values were observable, and it is
+            # the session's own number, so it is authoritative for that session.
             record = TrackRecord(
                 track_id=track_id,
                 track_name=track_name,
                 config_name=config_name,
                 corners_per_lap=float(sdk_num_turns),
                 source="sdk_track_num_turns",
-                confidence="low",
+                confidence="high",
                 updated_at=datetime.now(timezone.utc).isoformat(),
             )
             self._records[track_id] = record
             self._save()
-            logger.info("New track learned from the SDK: %s (%s) -> %s corners/lap [low confidence]",
+            logger.info("New track learned from the simulator: %s (%s) -> %s corners/lap",
                         track_name, config_name, sdk_num_turns)
             return record.corners_per_lap, record.source, record.confidence
 

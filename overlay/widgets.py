@@ -17,7 +17,7 @@ SESSION_TYPE_LABELS = {
     "warmup": "Warmup",
     "race": "Race",
     "time_trial": "Time Trial",
-    "unknown": "Sessao",
+    "unknown": "Session",
 }
 
 

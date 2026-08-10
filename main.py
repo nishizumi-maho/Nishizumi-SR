@@ -50,7 +50,9 @@ from sr.history import HistoryStore, build_record
 from sr.model import SRModelParams, session_weight
 from tracks.database import TrackDatabase
 
-LOGS_DIR = Path(__file__).resolve().parent / "logs"
+from app_paths import user_file
+
+LOGS_DIR = user_file("logs", ".keep").parent
 OVERLAY_MODES = ["compact", "normal", "detailed"]
 SESSION_COMPLETE_DISPLAY_SECONDS = 8
 
@@ -344,11 +346,11 @@ def main() -> None:
             hotkeys.shutdown()
         persist_overlay_state()
         sdk.shutdown()
-        logger.info("Aplicativo encerrado")
+        logger.info("Application closed")
 
     app.aboutToQuit.connect(cleanup)
 
-    logger.info("iRacing SR Estimator iniciado")
+    logger.info("Nishizumi SR started")
     sys.exit(app.exec())
 
 

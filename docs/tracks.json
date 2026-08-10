@@ -1,7 +1,7 @@
 {
  "_meta": {
   "source": "iRacing /data API - track/get endpoint",
-  "captured_utc": "2026-08-09",
+  "captured_utc": "2026-08-10",
   "note": "Official iRacing corners_per_lap. Key = track_id (same TrackID the SDK exposes).",
   "excluded": "tracks prefixed [Retired] (no longer raced)"
  },
@@ -12,7 +12,7 @@
    "category": "road",
    "track_name": "Summit Point Raceway",
    "config_name": "Jefferson Circuit",
-   "length_km": 1.11
+   "length_km": null
   },
   {
    "track_id": 9,
@@ -20,7 +20,7 @@
    "category": "road",
    "track_name": "Summit Point Raceway",
    "config_name": "Summit Point Raceway",
-   "length_km": 1.98
+   "length_km": null
   },
   {
    "track_id": 11,
@@ -28,7 +28,7 @@
    "category": "oval",
    "track_name": "Stafford Motor Speedway",
    "config_name": "Full Course",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 12,
@@ -36,7 +36,7 @@
    "category": "oval",
    "track_name": "Oxford Plains Speedway",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 14,
@@ -44,7 +44,7 @@
    "category": "oval",
    "track_name": "South Boston Speedway",
    "config_name": "",
-   "length_km": 0.4
+   "length_km": null
   },
   {
    "track_id": 15,
@@ -52,7 +52,7 @@
    "category": "oval",
    "track_name": "Concord Speedway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 16,
@@ -60,7 +60,7 @@
    "category": "oval",
    "track_name": "USA International Speedway",
    "config_name": "Asphalt",
-   "length_km": 0.75
+   "length_km": null
   },
   {
    "track_id": 17,
@@ -68,7 +68,7 @@
    "category": "oval",
    "track_name": "Lanier National Speedway",
    "config_name": "Asphalt",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 18,
@@ -76,7 +76,7 @@
    "category": "road",
    "track_name": "Road America",
    "config_name": "Full Course",
-   "length_km": 4.048
+   "length_km": null
   },
   {
    "track_id": 19,
@@ -84,7 +84,7 @@
    "category": "oval",
    "track_name": "Irwindale Speedway",
    "config_name": "Inner",
-   "length_km": 0.33
+   "length_km": null
   },
   {
    "track_id": 20,
@@ -92,7 +92,7 @@
    "category": "oval",
    "track_name": "Homestead Miami Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 21,
@@ -100,7 +100,7 @@
    "category": "road",
    "track_name": "Homestead Miami Speedway",
    "config_name": "Road Course A",
-   "length_km": 2.21
+   "length_km": null
   },
   {
    "track_id": 22,
@@ -108,7 +108,7 @@
    "category": "road",
    "track_name": "Homestead Miami Speedway",
    "config_name": "Road Course B",
-   "length_km": 2.3
+   "length_km": null
   },
   {
    "track_id": 23,
@@ -116,7 +116,7 @@
    "category": "oval",
    "track_name": "Irwindale Speedway",
    "config_name": "Outer",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 24,
@@ -124,7 +124,7 @@
    "category": "road",
    "track_name": "Summit Point Raceway",
    "config_name": "Short",
-   "length_km": 1.46
+   "length_km": null
   },
   {
    "track_id": 26,
@@ -132,7 +132,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Road Course - 2008",
-   "length_km": 3.56
+   "length_km": null
   },
   {
    "track_id": 27,
@@ -140,7 +140,7 @@
    "category": "oval",
    "track_name": "Daytona International Speedway",
    "config_name": "Oval - 2008",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 28,
@@ -148,7 +148,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Moto - 2008",
-   "length_km": 2.95
+   "length_km": null
   },
   {
    "track_id": 29,
@@ -156,7 +156,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Short - 2008",
-   "length_km": 1.04
+   "length_km": null
   },
   {
    "track_id": 30,
@@ -164,7 +164,7 @@
    "category": "oval",
    "track_name": "Irwindale Speedway",
    "config_name": "Outer - Inner",
-   "length_km": 0.4
+   "length_km": null
   },
   {
    "track_id": 31,
@@ -172,7 +172,7 @@
    "category": "oval",
    "track_name": "Richmond Raceway",
    "config_name": "[Retired] Richmond - 2007",
-   "length_km": 0.75
+   "length_km": null
   },
   {
    "track_id": 33,
@@ -180,7 +180,7 @@
    "category": "oval",
    "track_name": "Martinsville Speedway",
    "config_name": "",
-   "length_km": 0.526
+   "length_km": null
   },
   {
    "track_id": 37,
@@ -188,7 +188,7 @@
    "category": "road",
    "track_name": "[Legacy] Charlotte Motor Speedway - 2008",
    "config_name": "[Retired] Road Course",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 38,
@@ -196,7 +196,7 @@
    "category": "road",
    "track_name": "[Legacy] Charlotte Motor Speedway - 2008",
    "config_name": "[Retired] Infield Road Course",
-   "length_km": 0.72
+   "length_km": null
   },
   {
    "track_id": 39,
@@ -204,7 +204,7 @@
    "category": "oval",
    "track_name": "[Legacy] Charlotte Motor Speedway - 2008",
    "config_name": "[Retired] Legends Oval",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 40,
@@ -212,7 +212,7 @@
    "category": "oval",
    "track_name": "[Legacy] Charlotte Motor Speedway - 2008",
    "config_name": "[Retired] Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 41,
@@ -220,7 +220,7 @@
    "category": "road",
    "track_name": "[Legacy] Silverstone Circuit - 2008",
    "config_name": "Grand Prix",
-   "length_km": 3.194
+   "length_km": null
   },
   {
    "track_id": 42,
@@ -228,7 +228,7 @@
    "category": "road",
    "track_name": "[Legacy] Silverstone Circuit - 2008",
    "config_name": "Historical Grand Prix",
-   "length_km": 3.124
+   "length_km": null
   },
   {
    "track_id": 43,
@@ -236,7 +236,7 @@
    "category": "road",
    "track_name": "[Legacy] Silverstone Circuit - 2008",
    "config_name": "International",
-   "length_km": 2.249
+   "length_km": null
   },
   {
    "track_id": 44,
@@ -244,7 +244,7 @@
    "category": "road",
    "track_name": "[Legacy] Silverstone Circuit - 2008",
    "config_name": "National",
-   "length_km": 1.639
+   "length_km": null
   },
   {
    "track_id": 45,
@@ -252,7 +252,7 @@
    "category": "road",
    "track_name": "[Legacy] Silverstone Circuit - 2008",
    "config_name": "Southern",
-   "length_km": 1.969
+   "length_km": null
   },
   {
    "track_id": 48,
@@ -260,7 +260,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "[Retired] NASCAR Short",
-   "length_km": 1.99
+   "length_km": null
   },
   {
    "track_id": 49,
@@ -268,7 +268,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "[Retired] Open Wheel pre-2008",
-   "length_km": 2.22
+   "length_km": null
   },
   {
    "track_id": 50,
@@ -276,7 +276,7 @@
    "category": "road",
    "track_name": "Road America",
    "config_name": "Bend",
-   "length_km": 4.048
+   "length_km": null
   },
   {
    "track_id": 51,
@@ -284,7 +284,7 @@
    "category": "road",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Road - 2008",
-   "length_km": 2.55
+   "length_km": null
   },
   {
    "track_id": 52,
@@ -292,7 +292,7 @@
    "category": "oval",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Legends Oval - 2008",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 53,
@@ -300,7 +300,7 @@
    "category": "oval",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Oval - 2008",
-   "length_km": 1.54
+   "length_km": null
   },
   {
    "track_id": 94,
@@ -308,7 +308,7 @@
    "category": "oval",
    "track_name": "The Milwaukee Mile",
    "config_name": "",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 95,
@@ -316,7 +316,7 @@
    "category": "road",
    "track_name": "Sebring International Raceway",
    "config_name": "International",
-   "length_km": 3.74
+   "length_km": null
   },
   {
    "track_id": 96,
@@ -324,7 +324,7 @@
    "category": "road",
    "track_name": "Sebring International Raceway",
    "config_name": "Modified",
-   "length_km": 1.97
+   "length_km": null
   },
   {
    "track_id": 97,
@@ -332,7 +332,7 @@
    "category": "road",
    "track_name": "Sebring International Raceway",
    "config_name": "Club",
-   "length_km": 1.75
+   "length_km": null
   },
   {
    "track_id": 98,
@@ -340,7 +340,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "[Retired] NASCAR Long",
-   "length_km": 2.53
+   "length_km": null
   },
   {
    "track_id": 101,
@@ -348,7 +348,7 @@
    "category": "oval",
    "track_name": "Bristol Motor Speedway",
    "config_name": "Dual Pit Roads",
-   "length_km": 0.533
+   "length_km": null
   },
   {
    "track_id": 102,
@@ -356,7 +356,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "[Retired] Open Wheel 2008-2011",
-   "length_km": 2.22
+   "length_km": null
   },
   {
    "track_id": 103,
@@ -364,7 +364,7 @@
    "category": "oval",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 104,
@@ -372,7 +372,7 @@
    "category": "oval",
    "track_name": "[Legacy] Phoenix Raceway - 2008",
    "config_name": "Oval",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 105,
@@ -380,7 +380,7 @@
    "category": "road",
    "track_name": "[Legacy] Phoenix Raceway - 2008",
    "config_name": "Road Course",
-   "length_km": 1.51
+   "length_km": null
   },
   {
    "track_id": 110,
@@ -388,7 +388,7 @@
    "category": "oval",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Legends Oval",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 111,
@@ -396,7 +396,7 @@
    "category": "road",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Road Course Long",
-   "length_km": 1.07
+   "length_km": null
   },
   {
    "track_id": 112,
@@ -404,7 +404,7 @@
    "category": "road",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Road Course Short",
-   "length_km": 0.75
+   "length_km": null
   },
   {
    "track_id": 113,
@@ -412,7 +412,7 @@
    "category": "oval",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Infield Legends Oval",
-   "length_km": 0.34
+   "length_km": null
   },
   {
    "track_id": 114,
@@ -420,7 +420,7 @@
    "category": "road",
    "track_name": "Las Vegas Motor Speedway",
    "config_name": "Road Course Combined",
-   "length_km": 2.2
+   "length_km": null
   },
   {
    "track_id": 115,
@@ -428,7 +428,7 @@
    "category": "oval",
    "track_name": "Darlington Raceway",
    "config_name": "",
-   "length_km": 1.366
+   "length_km": null
   },
   {
    "track_id": 116,
@@ -436,7 +436,7 @@
    "category": "oval",
    "track_name": "Talladega Superspeedway",
    "config_name": "",
-   "length_km": 2.66
+   "length_km": null
   },
   {
    "track_id": 117,
@@ -444,7 +444,7 @@
    "category": "road",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Road Course Long",
-   "length_km": 0.87
+   "length_km": null
   },
   {
    "track_id": 118,
@@ -452,7 +452,7 @@
    "category": "road",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Road Course Short A",
-   "length_km": 0.41
+   "length_km": null
   },
   {
    "track_id": 119,
@@ -460,7 +460,7 @@
    "category": "road",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Road Course Short B",
-   "length_km": 0.48
+   "length_km": null
   },
   {
    "track_id": 120,
@@ -468,7 +468,7 @@
    "category": "oval",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Legends Oval",
-   "length_km": 0.24
+   "length_km": null
   },
   {
    "track_id": 121,
@@ -476,7 +476,7 @@
    "category": "oval",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 122,
@@ -484,7 +484,7 @@
    "category": "road",
    "track_name": "[Legacy] Texas Motor Speedway - 2009",
    "config_name": "Road Course Combined",
-   "length_km": 2.28
+   "length_km": null
   },
   {
    "track_id": 123,
@@ -492,7 +492,7 @@
    "category": "oval",
    "track_name": "Chicagoland Speedway",
    "config_name": "",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 124,
@@ -500,7 +500,7 @@
    "category": "oval",
    "track_name": "[Legacy] Michigan International Speedway - 2009",
    "config_name": "",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 126,
@@ -508,7 +508,7 @@
    "category": "road",
    "track_name": "Road Atlanta",
    "config_name": "Club",
-   "length_km": 1.81
+   "length_km": null
   },
   {
    "track_id": 127,
@@ -516,7 +516,7 @@
    "category": "road",
    "track_name": "Road Atlanta",
    "config_name": "Full Course",
-   "length_km": 2.54
+   "length_km": null
   },
   {
    "track_id": 128,
@@ -524,7 +524,7 @@
    "category": "road",
    "track_name": "Road Atlanta",
    "config_name": "Short",
-   "length_km": 1.76
+   "length_km": null
   },
   {
    "track_id": 129,
@@ -532,7 +532,7 @@
    "category": "road",
    "track_name": "New Hampshire Motor Speedway",
    "config_name": "Road Course",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 130,
@@ -540,7 +540,7 @@
    "category": "road",
    "track_name": "New Hampshire Motor Speedway",
    "config_name": "Road Course with North Oval",
-   "length_km": 1.59
+   "length_km": null
   },
   {
    "track_id": 131,
@@ -548,7 +548,7 @@
    "category": "oval",
    "track_name": "New Hampshire Motor Speedway",
    "config_name": "Oval",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 132,
@@ -556,7 +556,7 @@
    "category": "road",
    "track_name": "New Hampshire Motor Speedway",
    "config_name": "Road Course with South Oval",
-   "length_km": 1.55
+   "length_km": null
   },
   {
    "track_id": 133,
@@ -564,7 +564,7 @@
    "category": "oval",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "NASCAR Oval - 2009",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 134,
@@ -572,7 +572,7 @@
    "category": "road",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "Road Course - 2009",
-   "length_km": 2.605
+   "length_km": null
   },
   {
    "track_id": 135,
@@ -580,7 +580,7 @@
    "category": "road",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "Bike - 2009",
-   "length_km": 2.621
+   "length_km": null
   },
   {
    "track_id": 136,
@@ -588,7 +588,7 @@
    "category": "oval",
    "track_name": "[Legacy] Pocono Raceway - 2009",
    "config_name": "Oval",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 137,
@@ -596,7 +596,7 @@
    "category": "road",
    "track_name": "[Legacy] Pocono Raceway - 2009",
    "config_name": "East",
-   "length_km": 1.4
+   "length_km": null
   },
   {
    "track_id": 138,
@@ -604,7 +604,7 @@
    "category": "road",
    "track_name": "[Legacy] Pocono Raceway - 2009",
    "config_name": "South",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 139,
@@ -612,7 +612,7 @@
    "category": "road",
    "track_name": "[Legacy] Pocono Raceway - 2009",
    "config_name": "North",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 140,
@@ -620,7 +620,7 @@
    "category": "road",
    "track_name": "[Legacy] Pocono Raceway - 2009",
    "config_name": "International",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 142,
@@ -628,7 +628,7 @@
    "category": "road",
    "track_name": "Summit Point Raceway",
    "config_name": "Jefferson Reverse",
-   "length_km": 1.11
+   "length_km": null
   },
   {
    "track_id": 143,
@@ -636,7 +636,7 @@
    "category": "oval",
    "track_name": "Centripetal Circuit",
    "config_name": "",
-   "length_km": 0.123
+   "length_km": null
   },
   {
    "track_id": 144,
@@ -644,7 +644,7 @@
    "category": "road",
    "track_name": "Canadian Tire Motorsports Park",
    "config_name": "",
-   "length_km": 2.459
+   "length_km": null
   },
   {
    "track_id": 145,
@@ -652,7 +652,7 @@
    "category": "road",
    "track_name": "Brands Hatch Circuit",
    "config_name": "Grand Prix",
-   "length_km": 2.301
+   "length_km": null
   },
   {
    "track_id": 146,
@@ -660,7 +660,7 @@
    "category": "road",
    "track_name": "Brands Hatch Circuit",
    "config_name": "Indy",
-   "length_km": 1.198
+   "length_km": null
   },
   {
    "track_id": 147,
@@ -668,7 +668,7 @@
    "category": "road",
    "track_name": "Circuit Park Zandvoort",
    "config_name": "Chicane - 2009",
-   "length_km": 2.68
+   "length_km": null
   },
   {
    "track_id": 148,
@@ -676,7 +676,7 @@
    "category": "road",
    "track_name": "Circuit Park Zandvoort",
    "config_name": "Club - 2009",
-   "length_km": 1.6
+   "length_km": null
   },
   {
    "track_id": 149,
@@ -684,7 +684,7 @@
    "category": "road",
    "track_name": "Circuit Park Zandvoort",
    "config_name": "Grand Prix - 2009",
-   "length_km": 2.671
+   "length_km": null
   },
   {
    "track_id": 150,
@@ -692,7 +692,7 @@
    "category": "road",
    "track_name": "Circuit Park Zandvoort",
    "config_name": "Nationaal - 2009",
-   "length_km": 1.8
+   "length_km": null
   },
   {
    "track_id": 151,
@@ -700,7 +700,7 @@
    "category": "road",
    "track_name": "Circuit Park Zandvoort",
    "config_name": "Oostelijk - 2009",
-   "length_km": 0.9
+   "length_km": null
   },
   {
    "track_id": 152,
@@ -708,7 +708,7 @@
    "category": "road",
    "track_name": "Phillip Island Circuit",
    "config_name": "",
-   "length_km": 2.762
+   "length_km": null
   },
   {
    "track_id": 153,
@@ -716,7 +716,7 @@
    "category": "road",
    "track_name": "Mid-Ohio Sports Car Course",
    "config_name": "Full Course",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 154,
@@ -724,7 +724,7 @@
    "category": "road",
    "track_name": "Mid-Ohio Sports Car Course",
    "config_name": "Chicane",
-   "length_km": 2.4
+   "length_km": null
   },
   {
    "track_id": 155,
@@ -732,7 +732,7 @@
    "category": "road",
    "track_name": "Mid-Ohio Sports Car Course",
    "config_name": "Short",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 156,
@@ -740,7 +740,7 @@
    "category": "oval",
    "track_name": "Mid-Ohio Sports Car Course",
    "config_name": "Oval",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 157,
@@ -748,7 +748,7 @@
    "category": "oval",
    "track_name": "Mid-Ohio Sports Car Course",
    "config_name": "Alt Oval",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 159,
@@ -756,7 +756,7 @@
    "category": "road",
    "track_name": "Summit Point Raceway",
    "config_name": "School",
-   "length_km": 1.98
+   "length_km": null
   },
   {
    "track_id": 161,
@@ -764,7 +764,7 @@
    "category": "oval",
    "track_name": "Thompson Speedway Motorsports Park",
    "config_name": "Oval",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 162,
@@ -772,7 +772,7 @@
    "category": "oval",
    "track_name": "Dover Motor Speedway",
    "config_name": "",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 163,
@@ -780,7 +780,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Grand Prix Pits - 2010",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 164,
@@ -788,7 +788,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Classic Pits - 2010",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 165,
@@ -796,7 +796,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Endurance - 2010",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 166,
@@ -804,7 +804,7 @@
    "category": "road",
    "track_name": "Okayama International Circuit",
    "config_name": "Full Course",
-   "length_km": 2.314
+   "length_km": null
   },
   {
    "track_id": 167,
@@ -812,7 +812,7 @@
    "category": "road",
    "track_name": "Okayama International Circuit",
    "config_name": "Short",
-   "length_km": 1.3
+   "length_km": null
   },
   {
    "track_id": 168,
@@ -820,7 +820,7 @@
    "category": "road",
    "track_name": "Suzuka International Racing Course",
    "config_name": "Grand Prix",
-   "length_km": 3.609
+   "length_km": null
   },
   {
    "track_id": 169,
@@ -828,7 +828,7 @@
    "category": "oval",
    "track_name": "Iowa Speedway - Oval - 2011",
    "config_name": "Oval - 2011",
-   "length_km": 0.857
+   "length_km": null
   },
   {
    "track_id": 170,
@@ -836,7 +836,7 @@
    "category": "road",
    "track_name": "Iowa Speedway",
    "config_name": "Road Course - 2011",
-   "length_km": 1.3
+   "length_km": null
   },
   {
    "track_id": 171,
@@ -844,7 +844,7 @@
    "category": "oval",
    "track_name": "Iowa Speedway",
    "config_name": "Legends - 2011",
-   "length_km": 0.2
+   "length_km": null
   },
   {
    "track_id": 172,
@@ -852,7 +852,7 @@
    "category": "oval",
    "track_name": "Iowa Speedway",
    "config_name": "Infield Legends - 2011",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 173,
@@ -860,7 +860,7 @@
    "category": "road",
    "track_name": "Suzuka International Racing Course",
    "config_name": "Moto",
-   "length_km": 3.617
+   "length_km": null
   },
   {
    "track_id": 174,
@@ -868,7 +868,7 @@
    "category": "road",
    "track_name": "Suzuka International Racing Course",
    "config_name": "East",
-   "length_km": 1.394
+   "length_km": null
   },
   {
    "track_id": 175,
@@ -876,7 +876,7 @@
    "category": "road",
    "track_name": "Suzuka International Racing Course",
    "config_name": "West",
-   "length_km": 2.154
+   "length_km": null
   },
   {
    "track_id": 176,
@@ -884,7 +884,7 @@
    "category": "road",
    "track_name": "Suzuka International Racing Course",
    "config_name": "West w/chicane",
-   "length_km": 2.154
+   "length_km": null
   },
   {
    "track_id": 178,
@@ -892,7 +892,7 @@
    "category": "oval",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "Open Wheel Oval - 2009",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 179,
@@ -900,7 +900,7 @@
    "category": "road",
    "track_name": "Long Beach Street Circuit",
    "config_name": "",
-   "length_km": 1.968
+   "length_km": null
   },
   {
    "track_id": 180,
@@ -908,7 +908,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "International",
-   "length_km": 2.692
+   "length_km": null
   },
   {
    "track_id": 181,
@@ -916,7 +916,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Fosters",
-   "length_km": 1.66
+   "length_km": null
   },
   {
    "track_id": 182,
@@ -924,7 +924,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Island",
-   "length_km": 2.26
+   "length_km": null
   },
   {
    "track_id": 183,
@@ -932,7 +932,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Intl w/out Hislop",
-   "length_km": 2.692
+   "length_km": null
   },
   {
    "track_id": 184,
@@ -940,7 +940,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Intl w/out Brittens",
-   "length_km": 2.692
+   "length_km": null
   },
   {
    "track_id": 185,
@@ -948,7 +948,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Intl w/no Chicanes",
-   "length_km": 2.692
+   "length_km": null
   },
   {
    "track_id": 186,
@@ -956,7 +956,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Fosters w/Hislop",
-   "length_km": 1.66
+   "length_km": null
   },
   {
    "track_id": 187,
@@ -964,7 +964,7 @@
    "category": "road",
    "track_name": "Oulton Park Circuit",
    "config_name": "Island Historic",
-   "length_km": 2.26
+   "length_km": null
   },
   {
    "track_id": 188,
@@ -972,7 +972,7 @@
    "category": "oval",
    "track_name": "[Legacy] Kentucky Speedway - 2011",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 189,
@@ -980,7 +980,7 @@
    "category": "oval",
    "track_name": "[Legacy] Kentucky Speedway - 2011",
    "config_name": "Legends",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 190,
@@ -988,7 +988,7 @@
    "category": "oval",
    "track_name": "New Smyrna Speedway",
    "config_name": "",
-   "length_km": 0.48
+   "length_km": null
   },
   {
    "track_id": 191,
@@ -996,7 +996,7 @@
    "category": "oval",
    "track_name": "Daytona International Speedway",
    "config_name": "Oval",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 192,
@@ -1004,7 +1004,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Road Course",
-   "length_km": 3.56
+   "length_km": null
   },
   {
    "track_id": 193,
@@ -1012,7 +1012,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Moto",
-   "length_km": 2.95
+   "length_km": null
   },
   {
    "track_id": 194,
@@ -1020,7 +1020,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "Short",
-   "length_km": 1.04
+   "length_km": null
   },
   {
    "track_id": 195,
@@ -1028,7 +1028,7 @@
    "category": "road",
    "track_name": "Mobility Resort Motegi",
    "config_name": "Grand Prix",
-   "length_km": 2.983
+   "length_km": null
   },
   {
    "track_id": 196,
@@ -1036,7 +1036,7 @@
    "category": "road",
    "track_name": "Mobility Resort Motegi",
    "config_name": "East",
-   "length_km": 2.112
+   "length_km": null
   },
   {
    "track_id": 197,
@@ -1044,7 +1044,7 @@
    "category": "road",
    "track_name": "Mobility Resort Motegi",
    "config_name": "West",
-   "length_km": 0.869
+   "length_km": null
   },
   {
    "track_id": 198,
@@ -1052,7 +1052,7 @@
    "category": "oval",
    "track_name": "Mobility Resort Motegi",
    "config_name": "Oval",
-   "length_km": 1.549
+   "length_km": null
   },
   {
    "track_id": 199,
@@ -1060,7 +1060,7 @@
    "category": "road",
    "track_name": "Circuit Zolder",
    "config_name": "Grand Prix",
-   "length_km": 2.492
+   "length_km": null
   },
   {
    "track_id": 200,
@@ -1068,7 +1068,7 @@
    "category": "road",
    "track_name": "Circuit Zolder",
    "config_name": "Alternate",
-   "length_km": 2.492
+   "length_km": null
   },
   {
    "track_id": 201,
@@ -1076,7 +1076,7 @@
    "category": "oval",
    "track_name": "Langley Speedway",
    "config_name": "",
-   "length_km": 0.395
+   "length_km": null
   },
   {
    "track_id": 202,
@@ -1084,7 +1084,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "Grand Prix",
-   "length_km": 1.62
+   "length_km": null
   },
   {
    "track_id": 203,
@@ -1092,7 +1092,7 @@
    "category": "oval",
    "track_name": "Rockingham Speedway",
    "config_name": "Oval - 2012",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 204,
@@ -1100,7 +1100,7 @@
    "category": "road",
    "track_name": "Rockingham Speedway",
    "config_name": "Road Course",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 205,
@@ -1108,7 +1108,7 @@
    "category": "road",
    "track_name": "Rockingham Speedway",
    "config_name": "Infield Road Course",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 206,
@@ -1116,7 +1116,7 @@
    "category": "road",
    "track_name": "Rockingham Speedway",
    "config_name": "Short Road Course",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 207,
@@ -1124,7 +1124,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "North",
-   "length_km": 0.66
+   "length_km": null
   },
   {
    "track_id": 208,
@@ -1132,7 +1132,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "South",
-   "length_km": 1.218
+   "length_km": null
   },
   {
    "track_id": 209,
@@ -1140,7 +1140,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "North A",
-   "length_km": 0.66
+   "length_km": null
   },
   {
    "track_id": 210,
@@ -1148,7 +1148,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "North B",
-   "length_km": 0.66
+   "length_km": null
   },
   {
    "track_id": 211,
@@ -1156,7 +1156,7 @@
    "category": "road",
    "track_name": "Oran Park Raceway",
    "config_name": "Moto",
-   "length_km": 1.62
+   "length_km": null
   },
   {
    "track_id": 212,
@@ -1164,7 +1164,7 @@
    "category": "road",
    "track_name": "Autódromo José Carlos Pace",
    "config_name": "Grand Prix",
-   "length_km": 2.676
+   "length_km": null
   },
   {
    "track_id": 213,
@@ -1172,7 +1172,7 @@
    "category": "road",
    "track_name": "Autódromo José Carlos Pace",
    "config_name": "Moto",
-   "length_km": 2.676
+   "length_km": null
   },
   {
    "track_id": 214,
@@ -1180,7 +1180,7 @@
    "category": "oval",
    "track_name": "Kansas Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 215,
@@ -1188,7 +1188,7 @@
    "category": "road",
    "track_name": "Kansas Speedway",
    "config_name": "Road Course",
-   "length_km": 2.37
+   "length_km": null
   },
   {
    "track_id": 216,
@@ -1196,7 +1196,7 @@
    "category": "road",
    "track_name": "Kansas Speedway",
    "config_name": "Infield Road Course",
-   "length_km": 0.86
+   "length_km": null
   },
   {
    "track_id": 217,
@@ -1204,7 +1204,7 @@
    "category": "road",
    "track_name": "Irwindale Speedway",
    "config_name": "Figure Eight",
-   "length_km": 0.33
+   "length_km": null
   },
   {
    "track_id": 218,
@@ -1212,7 +1212,7 @@
    "category": "road",
    "track_name": "Circuit Gilles Villeneuve",
    "config_name": "",
-   "length_km": 2.71
+   "length_km": null
   },
   {
    "track_id": 219,
@@ -1220,7 +1220,7 @@
    "category": "road",
    "track_name": "Mount Panorama Circuit",
    "config_name": "",
-   "length_km": 3.861
+   "length_km": null
   },
   {
    "track_id": 220,
@@ -1228,7 +1228,7 @@
    "category": "road",
    "track_name": "New Jersey Motorsports Park",
    "config_name": "Thunderbolt",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 221,
@@ -1236,7 +1236,7 @@
    "category": "road",
    "track_name": "New Jersey Motorsports Park",
    "config_name": "Thunderbolt w/both chicanes",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 222,
@@ -1244,7 +1244,7 @@
    "category": "oval",
    "track_name": "New Hampshire Motor Speedway",
    "config_name": "Legends",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 223,
@@ -1252,7 +1252,7 @@
    "category": "road",
    "track_name": "New Jersey Motorsports Park",
    "config_name": "Thunderbolt w/first chicane",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 224,
@@ -1260,7 +1260,7 @@
    "category": "road",
    "track_name": "New Jersey Motorsports Park",
    "config_name": "Thunderbolt w/second chicane",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 225,
@@ -1268,7 +1268,7 @@
    "category": "oval",
    "track_name": "Auto Club Speedway",
    "config_name": "Oval",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 226,
@@ -1276,7 +1276,7 @@
    "category": "road",
    "track_name": "Auto Club Speedway",
    "config_name": "Competition",
-   "length_km": 2.8
+   "length_km": null
   },
   {
    "track_id": 227,
@@ -1284,7 +1284,7 @@
    "category": "road",
    "track_name": "Auto Club Speedway",
    "config_name": "Moto",
-   "length_km": 2.36
+   "length_km": null
   },
   {
    "track_id": 228,
@@ -1292,7 +1292,7 @@
    "category": "road",
    "track_name": "Auto Club Speedway",
    "config_name": "Interior",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 229,
@@ -1300,7 +1300,7 @@
    "category": "road",
    "track_name": "Circuit of the Americas",
    "config_name": "Grand Prix",
-   "length_km": 3.427
+   "length_km": null
   },
   {
    "track_id": 230,
@@ -1308,7 +1308,7 @@
    "category": "road",
    "track_name": "Circuit of the Americas",
    "config_name": "East",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 231,
@@ -1316,7 +1316,7 @@
    "category": "road",
    "track_name": "Circuit of the Americas",
    "config_name": "West",
-   "length_km": 2.6
+   "length_km": null
   },
   {
    "track_id": 232,
@@ -1324,7 +1324,7 @@
    "category": "oval",
    "track_name": "Lucas Oil Indianapolis Raceway Park",
    "config_name": "Oval",
-   "length_km": 0.686
+   "length_km": null
   },
   {
    "track_id": 233,
@@ -1332,7 +1332,7 @@
    "category": "road",
    "track_name": "Donington Park Racing Circuit",
    "config_name": "Grand Prix",
-   "length_km": 2.498
+   "length_km": null
   },
   {
    "track_id": 234,
@@ -1340,7 +1340,7 @@
    "category": "road",
    "track_name": "Donington Park Racing Circuit",
    "config_name": "National",
-   "length_km": 1.957
+   "length_km": null
   },
   {
    "track_id": 237,
@@ -1348,7 +1348,7 @@
    "category": "oval",
    "track_name": "World Wide Technology Raceway (Gateway)",
    "config_name": "[Retired] Oval",
-   "length_km": 1.25
+   "length_km": null
   },
   {
    "track_id": 238,
@@ -1356,7 +1356,7 @@
    "category": "road",
    "track_name": "World Wide Technology Raceway (Gateway)",
    "config_name": "Road Course",
-   "length_km": 1.6
+   "length_km": null
   },
   {
    "track_id": 239,
@@ -1364,7 +1364,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Grand Prix",
-   "length_km": 3.6
+   "length_km": null
   },
   {
    "track_id": 240,
@@ -1372,7 +1372,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Combined without chicanes",
-   "length_km": 6.213
+   "length_km": null
   },
   {
    "track_id": 241,
@@ -1380,7 +1380,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Junior",
-   "length_km": 1.494
+   "length_km": null
   },
   {
    "track_id": 242,
@@ -1388,7 +1388,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "GP without chicanes",
-   "length_km": 3.5
+   "length_km": null
   },
   {
    "track_id": 243,
@@ -1396,7 +1396,7 @@
    "category": "oval",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Oval - Right turning",
-   "length_km": 2.641
+   "length_km": null
   },
   {
    "track_id": 244,
@@ -1404,7 +1404,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "GP without first chicane",
-   "length_km": 3.5
+   "length_km": null
   },
   {
    "track_id": 245,
@@ -1412,7 +1412,7 @@
    "category": "oval",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Oval - Left turning",
-   "length_km": 2.641
+   "length_km": null
   },
   {
    "track_id": 246,
@@ -1420,7 +1420,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Combined without first chicane",
-   "length_km": 6.213
+   "length_km": null
   },
   {
    "track_id": 247,
@@ -1428,7 +1428,7 @@
    "category": "road",
    "track_name": "Autodromo Nazionale Monza",
    "config_name": "Combined",
-   "length_km": 6.213
+   "length_km": null
   },
   {
    "track_id": 248,
@@ -1436,7 +1436,7 @@
    "category": "oval",
    "track_name": "Five Flags Speedway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 249,
@@ -1444,7 +1444,7 @@
    "category": "road",
    "track_name": "Nürburgring Nordschleife",
    "config_name": "Industriefahrten",
-   "length_km": 14.173
+   "length_km": null
   },
   {
    "track_id": 250,
@@ -1452,7 +1452,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "Grand Prix",
-   "length_km": 3.199
+   "length_km": null
   },
   {
    "track_id": 252,
@@ -1460,7 +1460,7 @@
    "category": "road",
    "track_name": "Nürburgring Combined",
    "config_name": "Gesamtstrecke 24h",
-   "length_km": 16.123
+   "length_km": null
   },
   {
    "track_id": 253,
@@ -1468,7 +1468,7 @@
    "category": "road",
    "track_name": "Nürburgring Nordschleife",
    "config_name": "Touristenfahrten",
-   "length_km": 14.173
+   "length_km": null
   },
   {
    "track_id": 255,
@@ -1476,7 +1476,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "BES/WEC",
-   "length_km": 3.15
+   "length_km": null
   },
   {
    "track_id": 256,
@@ -1484,7 +1484,7 @@
    "category": "oval",
    "track_name": "Southern National Motorsports Park",
    "config_name": "",
-   "length_km": 0.4
+   "length_km": null
   },
   {
    "track_id": 257,
@@ -1492,7 +1492,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "Grand Prix w/out Arena",
-   "length_km": 2.845
+   "length_km": null
   },
   {
    "track_id": 259,
@@ -1500,7 +1500,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "Sprintstrecke",
-   "length_km": 2.254
+   "length_km": null
   },
   {
    "track_id": 260,
@@ -1508,7 +1508,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "Kurzanbindung w/out Arena",
-   "length_km": 1.895
+   "length_km": null
   },
   {
    "track_id": 261,
@@ -1516,7 +1516,7 @@
    "category": "road",
    "track_name": "Nürburgring Grand-Prix-Strecke",
    "config_name": "Müllenbachschleife",
-   "length_km": 0.932
+   "length_km": null
   },
   {
    "track_id": 262,
@@ -1524,7 +1524,7 @@
    "category": "road",
    "track_name": "Nürburgring Combined",
    "config_name": "Gesamtstrecke VLN",
-   "length_km": 15.183
+   "length_km": null
   },
   {
    "track_id": 263,
@@ -1532,7 +1532,7 @@
    "category": "road",
    "track_name": "Nürburgring Combined",
    "config_name": "Gesamtstrecke Short w/out Arena",
-   "length_km": 14.829
+   "length_km": null
   },
   {
    "track_id": 264,
@@ -1540,7 +1540,7 @@
    "category": "road",
    "track_name": "Nürburgring Combined",
    "config_name": "Gesamtstrecke Long",
-   "length_km": 16.123
+   "length_km": null
   },
   {
    "track_id": 266,
@@ -1548,7 +1548,7 @@
    "category": "road",
    "track_name": "Autodromo Internazionale Enzo e Dino Ferrari",
    "config_name": "Grand Prix",
-   "length_km": 3.05
+   "length_km": null
   },
   {
    "track_id": 267,
@@ -1556,7 +1556,7 @@
    "category": "road",
    "track_name": "Autodromo Internazionale Enzo e Dino Ferrari",
    "config_name": "Moto",
-   "length_km": 3.067
+   "length_km": null
   },
   {
    "track_id": 268,
@@ -1564,7 +1564,7 @@
    "category": "road",
    "track_name": "Circuit des 24 Heures du Mans",
    "config_name": "24 Heures du Mans",
-   "length_km": 8.469
+   "length_km": null
   },
   {
    "track_id": 269,
@@ -1572,7 +1572,7 @@
    "category": "road",
    "track_name": "Circuit des 24 Heures du Mans",
    "config_name": "Historic",
-   "length_km": 8.428
+   "length_km": null
   },
   {
    "track_id": 271,
@@ -1580,7 +1580,7 @@
    "category": "oval",
    "track_name": "The Bullring",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 273,
@@ -1588,7 +1588,7 @@
    "category": "dirt_oval",
    "track_name": "Eldora Speedway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 274,
@@ -1596,7 +1596,7 @@
    "category": "dirt_oval",
    "track_name": "Williams Grove Speedway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 275,
@@ -1604,7 +1604,7 @@
    "category": "dirt_oval",
    "track_name": "USA International Speedway",
    "config_name": "Dirt",
-   "length_km": 0.75
+   "length_km": null
   },
   {
    "track_id": 276,
@@ -1612,7 +1612,7 @@
    "category": "oval",
    "track_name": "Michigan International Speedway",
    "config_name": "",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 277,
@@ -1620,7 +1620,7 @@
    "category": "oval",
    "track_name": "Pocono Raceway",
    "config_name": "",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 279,
@@ -1628,7 +1628,7 @@
    "category": "dirt_oval",
    "track_name": "Volusia Speedway Park",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 286,
@@ -1636,7 +1636,7 @@
    "category": "oval",
    "track_name": "Myrtle Beach Speedway",
    "config_name": "",
-   "length_km": 0.538
+   "length_km": null
   },
   {
    "track_id": 287,
@@ -1644,7 +1644,7 @@
    "category": "dirt_oval",
    "track_name": "Bristol Motor Speedway",
    "config_name": "Dirt - 2021",
-   "length_km": 0.533
+   "length_km": null
   },
   {
    "track_id": 288,
@@ -1652,7 +1652,7 @@
    "category": "dirt_oval",
    "track_name": "Lanier National Speedway",
    "config_name": "Dirt",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 290,
@@ -1660,7 +1660,7 @@
    "category": "dirt_road",
    "track_name": "Brands Hatch Circuit",
    "config_name": "Rallycross",
-   "length_km": 1.21
+   "length_km": null
   },
   {
    "track_id": 293,
@@ -1668,7 +1668,7 @@
    "category": "dirt_road",
    "track_name": "Daytona Rallycross and Dirt Road",
    "config_name": "Rallycross Long",
-   "length_km": 0.86
+   "length_km": null
   },
   {
    "track_id": 295,
@@ -1676,7 +1676,7 @@
    "category": "dirt_road",
    "track_name": "Iowa Speedway",
    "config_name": "Rallycross - 2017",
-   "length_km": 0.66
+   "length_km": null
   },
   {
    "track_id": 296,
@@ -1684,7 +1684,7 @@
    "category": "dirt_road",
    "track_name": "Daytona Rallycross and Dirt Road",
    "config_name": "Rallycross Short",
-   "length_km": 0.71
+   "length_km": null
   },
   {
    "track_id": 297,
@@ -1692,7 +1692,7 @@
    "category": "road",
    "track_name": "Snetterton Circuit",
    "config_name": "300",
-   "length_km": 2.98
+   "length_km": null
   },
   {
    "track_id": 298,
@@ -1700,7 +1700,7 @@
    "category": "road",
    "track_name": "Snetterton Circuit",
    "config_name": "200",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 299,
@@ -1708,7 +1708,7 @@
    "category": "road",
    "track_name": "Snetterton Circuit",
    "config_name": "100",
-   "length_km": 0.98
+   "length_km": null
   },
   {
    "track_id": 303,
@@ -1716,7 +1716,7 @@
    "category": "dirt_oval",
    "track_name": "Limaland Motorsports Park",
    "config_name": "",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 304,
@@ -1724,7 +1724,7 @@
    "category": "dirt_road",
    "track_name": "Lucas Oil Indianapolis Raceway Park",
    "config_name": "Rallycross",
-   "length_km": 0.79
+   "length_km": null
   },
   {
    "track_id": 305,
@@ -1732,7 +1732,7 @@
    "category": "dirt_oval",
    "track_name": "Knoxville Raceway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 306,
@@ -1740,7 +1740,7 @@
    "category": "dirt_road",
    "track_name": "[Legacy] Phoenix Raceway - 2008",
    "config_name": "Rallycross",
-   "length_km": 0.76
+   "length_km": null
   },
   {
    "track_id": 312,
@@ -1748,7 +1748,7 @@
    "category": "dirt_road",
    "track_name": "Sonoma Raceway",
    "config_name": "Rallycross",
-   "length_km": 0.93
+   "length_km": null
   },
   {
    "track_id": 314,
@@ -1756,7 +1756,7 @@
    "category": "dirt_oval",
    "track_name": "The Dirt Track at Charlotte",
    "config_name": "",
-   "length_km": 0.4
+   "length_km": null
   },
   {
    "track_id": 319,
@@ -1764,7 +1764,7 @@
    "category": "road",
    "track_name": "Detroit Grand Prix at Belle Isle",
    "config_name": "Belle Isle",
-   "length_km": 2.35
+   "length_km": null
   },
   {
    "track_id": 320,
@@ -1772,7 +1772,7 @@
    "category": "dirt_oval",
    "track_name": "Kokomo Speedway",
    "config_name": "Tires in",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 322,
@@ -1780,7 +1780,7 @@
    "category": "dirt_road",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Rallycross Short",
-   "length_km": 0.68
+   "length_km": null
   },
   {
    "track_id": 323,
@@ -1788,7 +1788,7 @@
    "category": "dirt_road",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Rallycross Long",
-   "length_km": 0.97
+   "length_km": null
   },
   {
    "track_id": 324,
@@ -1796,7 +1796,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "2000 Full",
-   "length_km": 1.271
+   "length_km": null
   },
   {
    "track_id": 325,
@@ -1804,7 +1804,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "2000 Moto",
-   "length_km": 1.287
+   "length_km": null
   },
   {
    "track_id": 326,
@@ -1812,7 +1812,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "2000 Short",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 327,
@@ -1820,7 +1820,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "1000 Full",
-   "length_km": 0.621
+   "length_km": null
   },
   {
    "track_id": 328,
@@ -1828,7 +1828,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "1000 Outer",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 329,
@@ -1836,7 +1836,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "1000 Chicane",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 331,
@@ -1844,7 +1844,7 @@
    "category": "dirt_oval",
    "track_name": "Chili Bowl",
    "config_name": "",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 332,
@@ -1852,7 +1852,7 @@
    "category": "dirt_road",
    "track_name": "Wild West Motorsports Park",
    "config_name": "",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 333,
@@ -1860,7 +1860,7 @@
    "category": "road",
    "track_name": "Tsukuba Circuit",
    "config_name": "1000 Full Reverse",
-   "length_km": 0.621
+   "length_km": null
   },
   {
    "track_id": 334,
@@ -1868,7 +1868,7 @@
    "category": "dirt_road",
    "track_name": "Firebird Motorsports Park",
    "config_name": "",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 341,
@@ -1876,7 +1876,7 @@
    "category": "road",
    "track_name": "Silverstone Circuit",
    "config_name": "Grand Prix",
-   "length_km": 3.661
+   "length_km": null
   },
   {
    "track_id": 342,
@@ -1884,7 +1884,7 @@
    "category": "road",
    "track_name": "Silverstone Circuit",
    "config_name": "International",
-   "length_km": 1.851
+   "length_km": null
   },
   {
    "track_id": 343,
@@ -1892,7 +1892,7 @@
    "category": "road",
    "track_name": "Silverstone Circuit",
    "config_name": "National",
-   "length_km": 1.64
+   "length_km": null
   },
   {
    "track_id": 344,
@@ -1900,7 +1900,7 @@
    "category": "dirt_oval",
    "track_name": "Fairbury Speedway",
    "config_name": "",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 345,
@@ -1908,7 +1908,7 @@
    "category": "road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "Grand Prix",
-   "length_km": 2.892
+   "length_km": null
   },
   {
    "track_id": 346,
@@ -1916,7 +1916,7 @@
    "category": "road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "National",
-   "length_km": 1.85
+   "length_km": null
   },
   {
    "track_id": 347,
@@ -1924,7 +1924,7 @@
    "category": "road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "Club",
-   "length_km": 1.058
+   "length_km": null
   },
   {
    "track_id": 348,
@@ -1932,7 +1932,7 @@
    "category": "road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "Moto",
-   "length_km": 2.891
+   "length_km": null
   },
   {
    "track_id": 349,
@@ -1940,7 +1940,7 @@
    "category": "road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "Historic",
-   "length_km": 2.937
+   "length_km": null
   },
   {
    "track_id": 351,
@@ -1948,7 +1948,7 @@
    "category": "dirt_oval",
    "track_name": "Lernerville Speedway",
    "config_name": "",
-   "length_km": 0.4
+   "length_km": null
   },
   {
    "track_id": 352,
@@ -1956,7 +1956,7 @@
    "category": "road",
    "track_name": "Lime Rock Park",
    "config_name": "Classic",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 353,
@@ -1964,7 +1964,7 @@
    "category": "road",
    "track_name": "Lime Rock Park",
    "config_name": "Grand Prix",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 354,
@@ -1972,7 +1972,7 @@
    "category": "road",
    "track_name": "Lime Rock Park",
    "config_name": "Chicanes",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 355,
@@ -1980,7 +1980,7 @@
    "category": "road",
    "track_name": "Lime Rock Park",
    "config_name": "West Bend Chicane",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 357,
@@ -1988,7 +1988,7 @@
    "category": "oval",
    "track_name": "Texas Motor Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 358,
@@ -1996,7 +1996,7 @@
    "category": "dirt_road",
    "track_name": "Lånkebanen (Hell RX)",
    "config_name": "Hell Rallycross",
-   "length_km": 0.633
+   "length_km": null
   },
   {
    "track_id": 359,
@@ -2004,7 +2004,7 @@
    "category": "dirt_road",
    "track_name": "Lånkebanen (Hell RX)",
    "config_name": "Club",
-   "length_km": 0.641
+   "length_km": null
   },
   {
    "track_id": 360,
@@ -2012,7 +2012,7 @@
    "category": "dirt_road",
    "track_name": "Lånkebanen (Hell RX)",
    "config_name": "Rallycross Short",
-   "length_km": 0.672
+   "length_km": null
   },
   {
    "track_id": 361,
@@ -2020,7 +2020,7 @@
    "category": "road",
    "track_name": "Lånkebanen (Hell RX)",
    "config_name": "Road Short",
-   "length_km": 0.458
+   "length_km": null
   },
   {
    "track_id": 362,
@@ -2028,7 +2028,7 @@
    "category": "oval",
    "track_name": "Homestead Miami Speedway",
    "config_name": "Open Wheel Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 363,
@@ -2036,7 +2036,7 @@
    "category": "road",
    "track_name": "Lånkebanen (Hell RX)",
    "config_name": "Road Long",
-   "length_km": 0.633
+   "length_km": null
   },
   {
    "track_id": 364,
@@ -2044,7 +2044,7 @@
    "category": "oval",
    "track_name": "Texas Motor Speedway",
    "config_name": "Legends Oval",
-   "length_km": 0.24
+   "length_km": null
   },
   {
    "track_id": 365,
@@ -2052,7 +2052,7 @@
    "category": "oval",
    "track_name": "Bristol Motor Speedway",
    "config_name": "Single Pit Roads",
-   "length_km": 0.533
+   "length_km": null
   },
   {
    "track_id": 366,
@@ -2060,7 +2060,7 @@
    "category": "oval",
    "track_name": "North Wilkesboro Speedway",
    "config_name": "Oval - 1987",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 371,
@@ -2068,7 +2068,7 @@
    "category": "oval",
    "track_name": "Kentucky Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 373,
@@ -2076,7 +2076,7 @@
    "category": "dirt_oval",
    "track_name": "Weedsport Speedway",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 374,
@@ -2084,7 +2084,7 @@
    "category": "oval",
    "track_name": "Nashville Fairgrounds Speedway",
    "config_name": "Oval",
-   "length_km": 0.596
+   "length_km": null
   },
   {
    "track_id": 380,
@@ -2092,7 +2092,7 @@
    "category": "oval",
    "track_name": "Nashville Fairgrounds Speedway",
    "config_name": "Mini",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 381,
@@ -2100,7 +2100,7 @@
    "category": "road",
    "track_name": "Daytona International Speedway",
    "config_name": "NASCAR Road",
-   "length_km": 3.56
+   "length_km": null
   },
   {
    "track_id": 382,
@@ -2108,7 +2108,7 @@
    "category": "dirt_road",
    "track_name": "Crandon International Raceway",
    "config_name": "Full",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 383,
@@ -2116,7 +2116,7 @@
    "category": "dirt_road",
    "track_name": "Crandon International Raceway",
    "config_name": "Short",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 384,
@@ -2124,7 +2124,7 @@
    "category": "oval",
    "track_name": "iRacing Superspeedway",
    "config_name": "",
-   "length_km": 3
+   "length_km": null
   },
   {
    "track_id": 386,
@@ -2132,7 +2132,7 @@
    "category": "dirt_road",
    "track_name": "Circuit de Barcelona Catalunya",
    "config_name": "Rallycross",
-   "length_km": 0.69
+   "length_km": null
   },
   {
    "track_id": 387,
@@ -2140,7 +2140,7 @@
    "category": "dirt_oval",
    "track_name": "Cedar Lake Speedway",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 388,
@@ -2148,7 +2148,7 @@
    "category": "road",
    "track_name": "Irwindale Speedway",
    "config_name": "Figure Eight Jump",
-   "length_km": 0.33
+   "length_km": null
   },
   {
    "track_id": 390,
@@ -2156,7 +2156,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Grand Prix",
-   "length_km": 2.84
+   "length_km": null
   },
   {
    "track_id": 391,
@@ -2164,7 +2164,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "National A",
-   "length_km": 2.29
+   "length_km": null
   },
   {
    "track_id": 392,
@@ -2172,7 +2172,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "National B",
-   "length_km": 2.29
+   "length_km": null
   },
   {
    "track_id": 393,
@@ -2180,7 +2180,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Short A",
-   "length_km": 1.64
+   "length_km": null
   },
   {
    "track_id": 394,
@@ -2188,7 +2188,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Short B",
-   "length_km": 1.62
+   "length_km": null
   },
   {
    "track_id": 395,
@@ -2196,7 +2196,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Outer",
-   "length_km": 2.72
+   "length_km": null
   },
   {
    "track_id": 396,
@@ -2204,7 +2204,7 @@
    "category": "dirt_road",
    "track_name": "Bark River International Raceway",
    "config_name": "",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 397,
@@ -2212,7 +2212,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "[Retired] Open Wheel 2012-2018",
-   "length_km": 2.22
+   "length_km": null
   },
   {
    "track_id": 398,
@@ -2220,7 +2220,7 @@
    "category": "road",
    "track_name": "Mount Washington Hillclimb",
    "config_name": "Hillclimb",
-   "length_km": 7.6
+   "length_km": null
   },
   {
    "track_id": 399,
@@ -2228,7 +2228,7 @@
    "category": "road",
    "track_name": "Mount Washington Hillclimb",
    "config_name": "Descent",
-   "length_km": 7.4
+   "length_km": null
   },
   {
    "track_id": 400,
@@ -2236,7 +2236,7 @@
    "category": "oval",
    "track_name": "Nashville Superspeedway",
    "config_name": "",
-   "length_km": 1.333
+   "length_km": null
   },
   {
    "track_id": 403,
@@ -2244,7 +2244,7 @@
    "category": "road",
    "track_name": "Red Bull Ring",
    "config_name": "Grand Prix",
-   "length_km": 2.683
+   "length_km": null
   },
   {
    "track_id": 404,
@@ -2252,7 +2252,7 @@
    "category": "road",
    "track_name": "Red Bull Ring",
    "config_name": "National",
-   "length_km": 1.454
+   "length_km": null
   },
   {
    "track_id": 405,
@@ -2260,7 +2260,7 @@
    "category": "road",
    "track_name": "Chicago Street Course",
    "config_name": "Prototype",
-   "length_km": 2.14
+   "length_km": null
   },
   {
    "track_id": 407,
@@ -2268,7 +2268,7 @@
    "category": "road",
    "track_name": "Red Bull Ring",
    "config_name": "North",
-   "length_km": 1.14
+   "length_km": null
   },
   {
    "track_id": 413,
@@ -2276,7 +2276,7 @@
    "category": "road",
    "track_name": "Hungaroring",
    "config_name": "",
-   "length_km": 2.722
+   "length_km": null
   },
   {
    "track_id": 414,
@@ -2284,7 +2284,7 @@
    "category": "oval",
    "track_name": "Hickory Motor Speedway",
    "config_name": "",
-   "length_km": 0.363
+   "length_km": null
   },
   {
    "track_id": 418,
@@ -2292,7 +2292,7 @@
    "category": "oval",
    "track_name": "Phoenix Raceway",
    "config_name": "Oval",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 419,
@@ -2300,7 +2300,7 @@
    "category": "oval",
    "track_name": "Phoenix Raceway",
    "config_name": "Oval w/open dogleg",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 423,
@@ -2308,7 +2308,7 @@
    "category": "road",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "International",
-   "length_km": 1.26
+   "length_km": null
   },
   {
    "track_id": 424,
@@ -2316,7 +2316,7 @@
    "category": "road",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "International Reverse",
-   "length_km": 1.26
+   "length_km": null
   },
   {
    "track_id": 425,
@@ -2324,7 +2324,7 @@
    "category": "road",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "National",
-   "length_km": 1.12
+   "length_km": null
   },
   {
    "track_id": 426,
@@ -2332,7 +2332,7 @@
    "category": "road",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "National Reverse",
-   "length_km": 1.12
+   "length_km": null
   },
   {
    "track_id": 427,
@@ -2340,7 +2340,7 @@
    "category": "dirt_road",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "Rallycross",
-   "length_km": 0.86
+   "length_km": null
   },
   {
    "track_id": 428,
@@ -2348,7 +2348,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Porsche Experience Center - East",
-   "length_km": 1.05
+   "length_km": null
   },
   {
    "track_id": 429,
@@ -2356,7 +2356,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Porsche Experience Center - Outer",
-   "length_km": 0.91
+   "length_km": null
   },
   {
    "track_id": 430,
@@ -2364,7 +2364,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Porsche Experience Center - West",
-   "length_km": 0.61
+   "length_km": null
   },
   {
    "track_id": 431,
@@ -2372,7 +2372,7 @@
    "category": "road",
    "track_name": "Hockenheimring Baden-Württemberg",
    "config_name": "Porsche Experience Center - Handling",
-   "length_km": 1.63
+   "length_km": null
   },
   {
    "track_id": 432,
@@ -2380,7 +2380,7 @@
    "category": "road",
    "track_name": "Watkins Glen International",
    "config_name": "Classic",
-   "length_km": 2.42
+   "length_km": null
   },
   {
    "track_id": 433,
@@ -2388,7 +2388,7 @@
    "category": "road",
    "track_name": "Watkins Glen International",
    "config_name": "Cup",
-   "length_km": 2.45
+   "length_km": null
   },
   {
    "track_id": 434,
@@ -2396,7 +2396,7 @@
    "category": "road",
    "track_name": "Watkins Glen International",
    "config_name": "Boot",
-   "length_km": 3.45
+   "length_km": null
   },
   {
    "track_id": 435,
@@ -2404,7 +2404,7 @@
    "category": "road",
    "track_name": "Watkins Glen International",
    "config_name": "Classic Boot",
-   "length_km": 3.377
+   "length_km": null
   },
   {
    "track_id": 436,
@@ -2412,7 +2412,7 @@
    "category": "oval",
    "track_name": "Knockhill Racing Circuit",
    "config_name": "Tri-Oval",
-   "length_km": 0.23
+   "length_km": null
   },
   {
    "track_id": 437,
@@ -2420,7 +2420,7 @@
    "category": "oval",
    "track_name": "LA Coliseum Raceway",
    "config_name": "",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 438,
@@ -2428,7 +2428,7 @@
    "category": "dirt_oval",
    "track_name": "Federated Auto Parts Raceway at I-55",
    "config_name": "",
-   "length_km": 0.33
+   "length_km": null
   },
   {
    "track_id": 439,
@@ -2436,7 +2436,7 @@
    "category": "road",
    "track_name": "Winton Motor Raceway",
    "config_name": "National Circuit",
-   "length_km": 1.86
+   "length_km": null
   },
   {
    "track_id": 440,
@@ -2444,7 +2444,7 @@
    "category": "road",
    "track_name": "Winton Motor Raceway",
    "config_name": "Club Circuit",
-   "length_km": 1.26
+   "length_km": null
   },
   {
    "track_id": 442,
@@ -2452,7 +2452,7 @@
    "category": "dirt_oval",
    "track_name": "Bristol Motor Speedway",
    "config_name": "Dirt",
-   "length_km": 0.533
+   "length_km": null
   },
   {
    "track_id": 443,
@@ -2460,7 +2460,7 @@
    "category": "road",
    "track_name": "Sandown International Motor Raceway",
    "config_name": "",
-   "length_km": 1.928
+   "length_km": null
   },
   {
    "track_id": 444,
@@ -2468,7 +2468,7 @@
    "category": "road",
    "track_name": "Fuji International Speedway",
    "config_name": "Grand Prix",
-   "length_km": 2.833453
+   "length_km": null
   },
   {
    "track_id": 445,
@@ -2476,7 +2476,7 @@
    "category": "road",
    "track_name": "Fuji International Speedway",
    "config_name": "No Chicane",
-   "length_km": 2.789957
+   "length_km": null
   },
   {
    "track_id": 446,
@@ -2484,7 +2484,7 @@
    "category": "dirt_oval",
    "track_name": "Port Royal Speedway",
    "config_name": "",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 447,
@@ -2492,7 +2492,7 @@
    "category": "oval",
    "track_name": "EchoPark Speedway (Atlanta)",
    "config_name": "Oval",
-   "length_km": 1.54
+   "length_km": null
   },
   {
    "track_id": 448,
@@ -2500,7 +2500,7 @@
    "category": "road",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "Road Course",
-   "length_km": 2.439
+   "length_km": null
   },
   {
    "track_id": 449,
@@ -2508,7 +2508,7 @@
    "category": "road",
    "track_name": "Motorsport Arena Oschersleben",
    "config_name": "Grand Prix",
-   "length_km": 2.296
+   "length_km": null
   },
   {
    "track_id": 451,
@@ -2516,7 +2516,7 @@
    "category": "road",
    "track_name": "Rudskogen Motorsenter",
    "config_name": "",
-   "length_km": 2.022
+   "length_km": null
   },
   {
    "track_id": 452,
@@ -2524,7 +2524,7 @@
    "category": "dirt_oval",
    "track_name": "Lucas Oil Speedway",
    "config_name": "Dirt Oval",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 453,
@@ -2532,7 +2532,7 @@
    "category": "oval",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "Open Wheel Oval",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 454,
@@ -2540,7 +2540,7 @@
    "category": "road",
    "track_name": "Motorsport Arena Oschersleben",
    "config_name": "Alternate",
-   "length_km": 2.279
+   "length_km": null
   },
   {
    "track_id": 455,
@@ -2548,7 +2548,7 @@
    "category": "road",
    "track_name": "Motorsport Arena Oschersleben",
    "config_name": "B Course",
-   "length_km": 1.486
+   "length_km": null
   },
   {
    "track_id": 456,
@@ -2556,7 +2556,7 @@
    "category": "road",
    "track_name": "Motorsport Arena Oschersleben",
    "config_name": "C Course",
-   "length_km": 0.665
+   "length_km": null
   },
   {
    "track_id": 462,
@@ -2564,7 +2564,7 @@
    "category": "dirt_oval",
    "track_name": "Lincoln Speedway",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 463,
@@ -2572,7 +2572,7 @@
    "category": "road",
    "track_name": "Circuit de Nevers Magny-Cours",
    "config_name": "Grand Prix",
-   "length_km": 2.741
+   "length_km": null
   },
   {
    "track_id": 465,
@@ -2580,7 +2580,7 @@
    "category": "road",
    "track_name": "Virginia International Raceway",
    "config_name": "Full Course",
-   "length_km": 3.27
+   "length_km": null
   },
   {
    "track_id": 466,
@@ -2588,7 +2588,7 @@
    "category": "road",
    "track_name": "Virginia International Raceway",
    "config_name": "Grand Course",
-   "length_km": 4.07
+   "length_km": null
   },
   {
    "track_id": 467,
@@ -2596,7 +2596,7 @@
    "category": "road",
    "track_name": "Virginia International Raceway",
    "config_name": "North Course",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 468,
@@ -2604,7 +2604,7 @@
    "category": "road",
    "track_name": "Virginia International Raceway",
    "config_name": "South Course",
-   "length_km": 1.65
+   "length_km": null
   },
   {
    "track_id": 469,
@@ -2612,7 +2612,7 @@
    "category": "road",
    "track_name": "Virginia International Raceway",
    "config_name": "Patriot Course",
-   "length_km": 1.1
+   "length_km": null
   },
   {
    "track_id": 470,
@@ -2620,7 +2620,7 @@
    "category": "dirt_road",
    "track_name": "Daytona Rallycross and Dirt Road",
    "config_name": "Dirt Road Long",
-   "length_km": 0.86
+   "length_km": null
   },
   {
    "track_id": 471,
@@ -2628,7 +2628,7 @@
    "category": "dirt_road",
    "track_name": "Daytona Rallycross and Dirt Road",
    "config_name": "Dirt Road Short",
-   "length_km": 0.71
+   "length_km": null
   },
   {
    "track_id": 472,
@@ -2636,7 +2636,7 @@
    "category": "dirt_road",
    "track_name": "[Legacy] Phoenix Raceway - 2008",
    "config_name": "Dirt Road",
-   "length_km": 0.76
+   "length_km": null
   },
   {
    "track_id": 473,
@@ -2644,7 +2644,7 @@
    "category": "road",
    "track_name": "Circuito de Jerez - Ángel Nieto",
    "config_name": "Grand Prix",
-   "length_km": 2.751
+   "length_km": null
   },
   {
    "track_id": 474,
@@ -2652,7 +2652,7 @@
    "category": "road",
    "track_name": "Circuito de Jerez - Ángel Nieto",
    "config_name": "Moto",
-   "length_km": 2.748
+   "length_km": null
   },
   {
    "track_id": 475,
@@ -2660,7 +2660,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "Grand Prix",
-   "length_km": 3.321
+   "length_km": null
   },
   {
    "track_id": 476,
@@ -2668,7 +2668,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "National",
-   "length_km": 1.644
+   "length_km": null
   },
   {
    "track_id": 477,
@@ -2676,7 +2676,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "West",
-   "length_km": 1.706
+   "length_km": null
   },
   {
    "track_id": 478,
@@ -2684,7 +2684,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "Motorcycle Grand Prix",
-   "length_km": 3.155
+   "length_km": null
   },
   {
    "track_id": 479,
@@ -2692,7 +2692,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "Motorcycle National",
-   "length_km": 1.478
+   "length_km": null
   },
   {
    "track_id": 480,
@@ -2700,7 +2700,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "Outer",
-   "length_km": 3.1
+   "length_km": null
   },
   {
    "track_id": 481,
@@ -2708,7 +2708,7 @@
    "category": "road",
    "track_name": "Willow Springs International Raceway",
    "config_name": "Big Willow",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 482,
@@ -2716,7 +2716,7 @@
    "category": "road",
    "track_name": "MotorLand Aragón",
    "config_name": "Touring Car",
-   "length_km": 3.321
+   "length_km": null
   },
   {
    "track_id": 483,
@@ -2724,7 +2724,7 @@
    "category": "road",
    "track_name": "Chicago Street Course",
    "config_name": "2023 Cup",
-   "length_km": 2.14
+   "length_km": null
   },
   {
    "track_id": 485,
@@ -2732,7 +2732,7 @@
    "category": "road",
    "track_name": "Circuit Zandvoort",
    "config_name": "Grand Prix",
-   "length_km": 2.646
+   "length_km": null
   },
   {
    "track_id": 486,
@@ -2740,7 +2740,7 @@
    "category": "road",
    "track_name": "Circuit Zandvoort",
    "config_name": "Grand Prix w/chicane",
-   "length_km": 2.684
+   "length_km": null
   },
   {
    "track_id": 487,
@@ -2748,7 +2748,7 @@
    "category": "road",
    "track_name": "Circuit Zandvoort",
    "config_name": "Nationaal",
-   "length_km": 1.8
+   "length_km": null
   },
   {
    "track_id": 488,
@@ -2756,7 +2756,7 @@
    "category": "road",
    "track_name": "Circuit Zandvoort",
    "config_name": "Oostelijk",
-   "length_km": 0.9
+   "length_km": null
   },
   {
    "track_id": 489,
@@ -2764,7 +2764,7 @@
    "category": "road",
    "track_name": "Circuit de Lédenon",
    "config_name": "",
-   "length_km": 1.958
+   "length_km": null
   },
   {
    "track_id": 493,
@@ -2772,7 +2772,7 @@
    "category": "oval",
    "track_name": "Kevin Harvick's Kern Raceway",
    "config_name": "Asphalt Track",
-   "length_km": 0.5
+   "length_km": null
   },
   {
    "track_id": 494,
@@ -2780,7 +2780,7 @@
    "category": "dirt_oval",
    "track_name": "Kevin Harvick's Kern Raceway",
    "config_name": "Dirt Track",
-   "length_km": 0.33
+   "length_km": null
   },
   {
    "track_id": 496,
@@ -2788,7 +2788,7 @@
    "category": "oval",
    "track_name": "Kevin Harvick's Kern Raceway",
    "config_name": "Legends",
-   "length_km": 0.22
+   "length_km": null
   },
   {
    "track_id": 497,
@@ -2796,7 +2796,7 @@
    "category": "dirt_oval",
    "track_name": "Kevin Harvick's Kern Raceway",
    "config_name": "Dirt Mini Oval",
-   "length_km": 0.14
+   "length_km": null
   },
   {
    "track_id": 498,
@@ -2804,7 +2804,7 @@
    "category": "road",
    "track_name": "Autodromo Internazionale del Mugello",
    "config_name": "Grand Prix",
-   "length_km": 3.259
+   "length_km": null
   },
   {
    "track_id": 499,
@@ -2812,7 +2812,7 @@
    "category": "road",
    "track_name": "Autodromo Internazionale del Mugello",
    "config_name": "Short",
-   "length_km": 1.416
+   "length_km": null
   },
   {
    "track_id": 500,
@@ -2820,7 +2820,7 @@
    "category": "oval",
    "track_name": "Slinger Speedway",
    "config_name": "Oval",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 501,
@@ -2828,7 +2828,7 @@
    "category": "road",
    "track_name": "Misano World Circuit Marco Simoncelli",
    "config_name": "Grand Prix",
-   "length_km": 2.61
+   "length_km": null
   },
   {
    "track_id": 502,
@@ -2836,7 +2836,7 @@
    "category": "road",
    "track_name": "Misano World Circuit Marco Simoncelli",
    "config_name": "Grand Prix - 2007",
-   "length_km": 2.597
+   "length_km": null
   },
   {
    "track_id": 503,
@@ -2844,7 +2844,7 @@
    "category": "road",
    "track_name": "Misano World Circuit Marco Simoncelli",
    "config_name": "Grand Prix - Historic Reverse",
-   "length_km": 2
+   "length_km": null
   },
   {
    "track_id": 504,
@@ -2852,7 +2852,7 @@
    "category": "road",
    "track_name": "Misano World Circuit Marco Simoncelli",
    "config_name": "Club",
-   "length_km": 0.62
+   "length_km": null
   },
   {
    "track_id": 505,
@@ -2860,7 +2860,7 @@
    "category": "road",
    "track_name": "Misano World Circuit Marco Simoncelli",
    "config_name": "Truck",
-   "length_km": 2.498
+   "length_km": null
   },
   {
    "track_id": 506,
@@ -2868,7 +2868,7 @@
    "category": "road",
    "track_name": "Slinger Speedway",
    "config_name": "Figure 8",
-   "length_km": 0.28
+   "length_km": null
   },
   {
    "track_id": 508,
@@ -2876,7 +2876,7 @@
    "category": "road",
    "track_name": "Lime Rock Park",
    "config_name": "School",
-   "length_km": 1.53
+   "length_km": null
   },
   {
    "track_id": 509,
@@ -2884,7 +2884,7 @@
    "category": "road",
    "track_name": "Algarve International Circuit",
    "config_name": "Grand Prix",
-   "length_km": 2.853
+   "length_km": null
   },
   {
    "track_id": 510,
@@ -2892,7 +2892,7 @@
    "category": "road",
    "track_name": "Algarve International Circuit",
    "config_name": "Grand Prix - Chicanes",
-   "length_km": 2.911
+   "length_km": null
   },
   {
    "track_id": 511,
@@ -2900,7 +2900,7 @@
    "category": "road",
    "track_name": "Algarve International Circuit",
    "config_name": "Moto",
-   "length_km": 2.853
+   "length_km": null
   },
   {
    "track_id": 512,
@@ -2908,7 +2908,7 @@
    "category": "road",
    "track_name": "Algarve International Circuit",
    "config_name": "Moto - Chicanes",
-   "length_km": 2.853
+   "length_km": null
   },
   {
    "track_id": 513,
@@ -2916,7 +2916,7 @@
    "category": "dirt_oval",
    "track_name": "Millbridge Speedway",
    "config_name": "",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 514,
@@ -2924,7 +2924,7 @@
    "category": "dirt_oval",
    "track_name": "Kokomo Speedway",
    "config_name": "Tires out",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 515,
@@ -2932,7 +2932,7 @@
    "category": "road",
    "track_name": "Circuito de Navarra",
    "config_name": "Speed Circuit",
-   "length_km": 2.44
+   "length_km": null
   },
   {
    "track_id": 516,
@@ -2940,7 +2940,7 @@
    "category": "road",
    "track_name": "Circuito de Navarra",
    "config_name": "Speed Circuit - Medium",
-   "length_km": 1.66
+   "length_km": null
   },
   {
    "track_id": 517,
@@ -2948,7 +2948,7 @@
    "category": "road",
    "track_name": "Circuito de Navarra",
    "config_name": "Speed Circuit - Short",
-   "length_km": 0.828
+   "length_km": null
   },
   {
    "track_id": 518,
@@ -2956,7 +2956,7 @@
    "category": "oval",
    "track_name": "Oswego Speedway",
    "config_name": "Oval",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 519,
@@ -2964,7 +2964,7 @@
    "category": "oval",
    "track_name": "Oswego Speedway",
    "config_name": "Mini Oval",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 520,
@@ -2972,7 +2972,7 @@
    "category": "dirt_oval",
    "track_name": "Oswego Speedway",
    "config_name": "Dirt",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 521,
@@ -2980,7 +2980,7 @@
    "category": "road",
    "track_name": "Sachsenring",
    "config_name": "",
-   "length_km": 2.26
+   "length_km": null
   },
   {
    "track_id": 522,
@@ -2988,7 +2988,7 @@
    "category": "oval",
    "track_name": "Indianapolis Motor Speedway",
    "config_name": "NASCAR Oval",
-   "length_km": 2.5
+   "length_km": null
   },
   {
    "track_id": 523,
@@ -2996,7 +2996,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Grand Prix Pits",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 524,
@@ -3004,7 +3004,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Classic Pits",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 525,
@@ -3012,7 +3012,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Endurance",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 526,
@@ -3020,7 +3020,7 @@
    "category": "road",
    "track_name": "Circuit de Spa-Francorchamps",
    "config_name": "Bike",
-   "length_km": 4.35
+   "length_km": null
   },
   {
    "track_id": 527,
@@ -3028,7 +3028,7 @@
    "category": "road",
    "track_name": "Cadwell Park Circuit",
    "config_name": "Full",
-   "length_km": 2.17
+   "length_km": null
   },
   {
    "track_id": 528,
@@ -3036,7 +3036,7 @@
    "category": "road",
    "track_name": "Cadwell Park Circuit",
    "config_name": "Club",
-   "length_km": 1.47
+   "length_km": null
   },
   {
    "track_id": 529,
@@ -3044,7 +3044,7 @@
    "category": "road",
    "track_name": "Cadwell Park Circuit",
    "config_name": "Moto",
-   "length_km": 2.18
+   "length_km": null
   },
   {
    "track_id": 530,
@@ -3052,7 +3052,7 @@
    "category": "road",
    "track_name": "Cadwell Park Circuit",
    "config_name": "Woodlands",
-   "length_km": 0.85
+   "length_km": null
   },
   {
    "track_id": 531,
@@ -3060,7 +3060,7 @@
    "category": "dirt_oval",
    "track_name": "Huset's Speedway",
    "config_name": "",
-   "length_km": 0.375
+   "length_km": null
   },
   {
    "track_id": 532,
@@ -3068,7 +3068,7 @@
    "category": "road",
    "track_name": "Thruxton Circuit",
    "config_name": "",
-   "length_km": 2.356
+   "length_km": null
   },
   {
    "track_id": 533,
@@ -3076,7 +3076,7 @@
    "category": "road",
    "track_name": "Miami International Autodrome",
    "config_name": "Marina Loop",
-   "length_km": 2.44
+   "length_km": null
   },
   {
    "track_id": 534,
@@ -3084,7 +3084,7 @@
    "category": "road",
    "track_name": "Miami International Autodrome",
    "config_name": "MIA Loop",
-   "length_km": 1.43
+   "length_km": null
   },
   {
    "track_id": 535,
@@ -3092,7 +3092,7 @@
    "category": "road",
    "track_name": "Miami International Autodrome",
    "config_name": "Extended MIA Loop",
-   "length_km": 1.75
+   "length_km": null
   },
   {
    "track_id": 536,
@@ -3100,7 +3100,7 @@
    "category": "road",
    "track_name": "Portland International Raceway",
    "config_name": "Full Circuit",
-   "length_km": 1.967
+   "length_km": null
   },
   {
    "track_id": 537,
@@ -3108,7 +3108,7 @@
    "category": "road",
    "track_name": "Portland International Raceway",
    "config_name": "No Chicane",
-   "length_km": 1.934
+   "length_km": null
   },
   {
    "track_id": 538,
@@ -3116,7 +3116,7 @@
    "category": "road",
    "track_name": "Miami International Autodrome",
    "config_name": "Extended Marina Loop",
-   "length_km": 2.8
+   "length_km": null
   },
   {
    "track_id": 539,
@@ -3124,7 +3124,7 @@
    "category": "road",
    "track_name": "Miami International Autodrome",
    "config_name": "Grand Prix",
-   "length_km": 3.36
+   "length_km": null
   },
   {
    "track_id": 540,
@@ -3132,7 +3132,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "GT Circuit",
-   "length_km": 4.828
+   "length_km": null
   },
   {
    "track_id": 541,
@@ -3140,7 +3140,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "International Circuit",
-   "length_km": 3.076
+   "length_km": null
   },
   {
    "track_id": 542,
@@ -3148,7 +3148,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "East Circuit",
-   "length_km": 2.442
+   "length_km": null
   },
   {
    "track_id": 543,
@@ -3156,7 +3156,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "West Circuit",
-   "length_km": 2.119
+   "length_km": null
   },
   {
    "track_id": 544,
@@ -3164,7 +3164,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "West Plus Circuit",
-   "length_km": 2.27
+   "length_km": null
   },
   {
    "track_id": 545,
@@ -3172,7 +3172,7 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "Sprint Circuit",
-   "length_km": 1.72
+   "length_km": null
   },
   {
    "track_id": 546,
@@ -3180,63 +3180,63 @@
    "category": "road",
    "track_name": "Shell V-Power Motorsport Park at The Bend",
    "config_name": "South West Circuit",
-   "length_km": 1.13
+   "length_km": null
   },
   {
    "track_id": 550,
    "corners_per_lap": 11,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Legends Road Course 2025",
-   "length_km": 1.25
+   "length_km": null
   },
   {
    "track_id": 551,
    "corners_per_lap": 13,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Infield Road Course Long",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 552,
    "corners_per_lap": 8,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Infield Road Course",
-   "length_km": 0.72
+   "length_km": null
   },
   {
    "track_id": 553,
    "corners_per_lap": 17,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Roval 2019",
-   "length_km": 2.28
+   "length_km": null
   },
   {
    "track_id": 554,
    "corners_per_lap": 17,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Roval 2025",
-   "length_km": 2.28
+   "length_km": null
   },
   {
    "track_id": 555,
    "corners_per_lap": 17,
    "category": "road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Roval No Chicanes",
-   "length_km": 2.25
+   "length_km": null
   },
   {
    "track_id": 556,
    "corners_per_lap": 4,
    "category": "oval",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Oval",
-   "length_km": 1.5
+   "length_km": null
   },
   {
    "track_id": 557,
@@ -3244,15 +3244,15 @@
    "category": "oval",
    "track_name": "Charlotte Motor Speedway",
    "config_name": "Legends Oval",
-   "length_km": 0.25
+   "length_km": null
   },
   {
    "track_id": 558,
    "corners_per_lap": 7,
    "category": "dirt_road",
-   "track_name": "Charlotte Motor Speedway ",
+   "track_name": "Charlotte Motor Speedway",
    "config_name": "Rallyx",
-   "length_km": 0.83
+   "length_km": null
   },
   {
    "track_id": 559,
@@ -3260,7 +3260,7 @@
    "category": "oval",
    "track_name": "Iowa Speedway",
    "config_name": "Oval",
-   "length_km": 0.857
+   "length_km": null
   },
   {
    "track_id": 560,
@@ -3268,7 +3268,7 @@
    "category": "oval",
    "track_name": "World Wide Technology Raceway (Gateway)",
    "config_name": "Oval",
-   "length_km": 1.25
+   "length_km": null
   },
   {
    "track_id": 561,
@@ -3276,7 +3276,7 @@
    "category": "oval",
    "track_name": "Richmond Raceway",
    "config_name": "",
-   "length_km": 0.75
+   "length_km": null
   },
   {
    "track_id": 562,
@@ -3284,7 +3284,7 @@
    "category": "oval",
    "track_name": "North Wilkesboro Speedway",
    "config_name": "Oval",
-   "length_km": 0.625
+   "length_km": null
   },
   {
    "track_id": 563,
@@ -3292,7 +3292,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Indycar 2005-2007",
-   "length_km": 2.22
+   "length_km": null
   },
   {
    "track_id": 564,
@@ -3300,7 +3300,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Indycar 2008-2011",
-   "length_km": 2.3
+   "length_km": null
   },
   {
    "track_id": 565,
@@ -3308,7 +3308,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Indycar 2012-2018",
-   "length_km": 2.385
+   "length_km": null
   },
   {
    "track_id": 566,
@@ -3316,7 +3316,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Cup Long",
-   "length_km": 2.53
+   "length_km": null
   },
   {
    "track_id": 567,
@@ -3324,7 +3324,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Cup Short",
-   "length_km": 1.99
+   "length_km": null
   },
   {
    "track_id": 568,
@@ -3332,7 +3332,7 @@
    "category": "oval",
    "track_name": "Sonoma Raceway",
    "config_name": "Oval",
-   "length_km": 0.18
+   "length_km": null
   },
   {
    "track_id": 569,
@@ -3340,7 +3340,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Short",
-   "length_km": 2.19
+   "length_km": null
   },
   {
    "track_id": 570,
@@ -3348,7 +3348,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Sportscar",
-   "length_km": 2.53
+   "length_km": null
   },
   {
    "track_id": 571,
@@ -3356,7 +3356,7 @@
    "category": "road",
    "track_name": "Sonoma Raceway",
    "config_name": "Sportscar Alt",
-   "length_km": 2.52
+   "length_km": null
   },
   {
    "track_id": 572,
@@ -3364,7 +3364,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "Grand Prix",
-   "length_km": 2.674
+   "length_km": null
   },
   {
    "track_id": 573,
@@ -3372,7 +3372,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "Grand Prix Historic",
-   "length_km": 2.645
+   "length_km": null
   },
   {
    "track_id": 574,
@@ -3380,7 +3380,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "National",
-   "length_km": 2.429
+   "length_km": null
   },
   {
    "track_id": 575,
@@ -3388,7 +3388,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "National Historic",
-   "length_km": 2.4
+   "length_km": null
   },
   {
    "track_id": 576,
@@ -3396,7 +3396,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "EV Circuit",
-   "length_km": 1.634
+   "length_km": null
   },
   {
    "track_id": 577,
@@ -3404,7 +3404,7 @@
    "category": "oval",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "Oval",
-   "length_km": 1
+   "length_km": null
   },
   {
    "track_id": 578,
@@ -3412,7 +3412,7 @@
    "category": "road",
    "track_name": "Autódromo Hermanos Rodríguez",
    "config_name": "Oval Stadium",
-   "length_km": 1.034
+   "length_km": null
   },
   {
    "track_id": 579,
@@ -3420,7 +3420,7 @@
    "category": "road",
    "track_name": "Circuit of the Americas",
    "config_name": "NASCAR West",
-   "length_km": 2.4
+   "length_km": null
   },
   {
    "track_id": 580,
@@ -3428,7 +3428,7 @@
    "category": "road",
    "track_name": "Adelaide Street Circuit",
    "config_name": "",
-   "length_km": 2.012
+   "length_km": null
   },
   {
    "track_id": 581,
@@ -3436,7 +3436,7 @@
    "category": "dirt_road",
    "track_name": "Lucas Oil Speedway",
    "config_name": "Dirt Road",
-   "length_km": 1.14
+   "length_km": null
   },
   {
    "track_id": 582,
@@ -3444,7 +3444,7 @@
    "category": "dirt_road",
    "track_name": "Winton Motor Raceway",
    "config_name": "Rallycross",
-   "length_km": 0.72
+   "length_km": null
   },
   {
    "track_id": 583,
@@ -3452,7 +3452,7 @@
    "category": "oval",
    "track_name": "Rockingham Speedway",
    "config_name": "Oval",
-   "length_km": 0.94
+   "length_km": null
   },
   {
    "track_id": 584,
@@ -3460,7 +3460,7 @@
    "category": "road",
    "track_name": "St. Petersburg Grand Prix",
    "config_name": "Grand Prix",
-   "length_km": 1.808
+   "length_km": null
   },
   {
    "track_id": 585,
@@ -3468,7 +3468,7 @@
    "category": "road",
    "track_name": "Barber Motorsports Park",
    "config_name": "",
-   "length_km": 2.38
+   "length_km": null
   },
   {
    "track_id": 586,
@@ -3476,7 +3476,7 @@
    "category": "road",
    "track_name": "WeatherTech Raceway at Laguna Seca",
    "config_name": "2026",
-   "length_km": 2.238
+   "length_km": null
   },
   {
    "track_id": 587,
@@ -3484,7 +3484,7 @@
    "category": "dirt_road",
    "track_name": "Charlotte Motor Speedway",
    "config_name": "Dirt Road",
-   "length_km": 0.85
+   "length_km": null
   },
   {
    "track_id": 589,
@@ -3492,7 +3492,7 @@
    "category": "road",
    "track_name": "Qualcomm Circuit (Naval Base Coronado)",
    "config_name": "",
-   "length_km": 3.4
+   "length_km": null
   }
  ]
 }

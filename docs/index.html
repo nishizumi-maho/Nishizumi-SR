@@ -120,6 +120,7 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
         <div>
           <label for="track">Track &amp; layout</label>
           <select id="track"></select>
+          <div class="note" id="trackMeta" style="margin-top:6px"></div>
         </div>
       </div>
       <div class="row two">
@@ -343,6 +344,11 @@ function lapCount(){
 /* ─── tracks ────────────────────────────────────────────────── */
 const CATS = {road:'Road', oval:'Oval', dirt_oval:'Dirt Oval', dirt_road:'Dirt Road'};
 fetch('tracks.json').then(r => r.json()).then(d => {
+  if (d._meta && d._meta.captured_utc) {
+    const el = document.getElementById('trackMeta');
+    if (el) el.textContent = `${d.tracks.length} tracks · official iRacing values, `
+      + `updated ${d._meta.captured_utc}. Not listed? Type the corner count in.`;
+  }
   const ts = d.tracks.slice().sort((a,b) =>
     (a.track_name+a.config_name).localeCompare(b.track_name+b.config_name));
   const custom = new Option('— enter corners manually —', 'custom');

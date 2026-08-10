@@ -38,9 +38,9 @@ class GlobalHotkeys(QObject):
         try:
             keyboard.add_hotkey(key, callback)
             self._registered.append(key)
-            logger.info("Hotkey registrada: %s", key)
+            logger.info("Hotkey registered: %s", key)
         except Exception as exc:
-            logger.error("Falha ao registrar hotkey '%s': %s", key, exc)
+            logger.error("Could not register hotkey '%s': %s", key, exc)
 
     def shutdown(self) -> None:
         for key in self._registered:
@@ -91,7 +91,7 @@ class OverlayWindow(QWidget):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, locked)
         border = "1px dashed rgba(255,255,255,120)" if not locked else "1px solid rgba(255,255,255,40)"
         self.setStyleSheet(BASE_STYLESHEET.replace("1px solid rgba(255, 255, 255, 40)", border))
-        logger.info("Overlay %s", "travado (click-through)" if locked else "destravado (arrastavel)")
+        logger.info("Overlay %s", "locked (click-through)" if locked else "unlocked (draggable)")
 
     def toggle_lock(self) -> None:
         self.set_locked(not self._locked)
@@ -100,7 +100,7 @@ class OverlayWindow(QWidget):
         self.setVisible(not self.isVisible())
         logger.info("Overlay %s", "visivel" if self.isVisible() else "oculto")
 
-    # --- arrastar quando destravado ---
+    # --- drag when unlocked ---
     def mousePressEvent(self, event) -> None:
         if not self._locked and event.button() == Qt.LeftButton:
             self._drag_offset = event.globalPosition().toPoint() - self.pos()
