@@ -33,6 +33,17 @@ what 0x, 2x, 8x… would cost you.
 
 ## 2. Install
 
+### Download (easiest)
+
+Grab `NishizumiSR.exe` from the
+[latest release](https://github.com/nishizumi-maho/Nishizumi-SR/releases/latest)
+and run it. No Python needed.
+
+Settings, learned tracks, session history and logs are written to
+`%LOCALAPPDATA%\NishizumiSR` — never into the download itself.
+
+### From source
+
 Requires Windows, Python 3.10+, and iRacing.
 
 ```bash
@@ -162,6 +173,13 @@ Nordschleife Industriefahrten 73, Nürburgring Combined 165.
 At runtime the value reported by the live session (`TrackNumTurns`) wins if it
 disagrees, since that is the number that session actually used; the difference is
 logged rather than silently swallowed.
+
+**A season update is a non-event for the overlay.** `TrackNumTurns` *is*
+`corners_per_lap`, so a track added tomorrow is scored correctly the first time
+it is driven, with no table refresh. Refreshing the shipped table only matters
+for the web calculator — see [`docs/UPDATING_TRACKS.md`](docs/UPDATING_TRACKS.md):
+one browser export plus `python tools/update_tracks.py`. A monthly CI job opens
+an issue once the table passes 120 days old.
 
 Corners are counted by **distance driven** (`corners_per_lap × Δ LapDistPct`),
 not by lap count. A tow just after the pits, or an abandoned lap, therefore does

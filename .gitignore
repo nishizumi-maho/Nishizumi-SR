@@ -11,3 +11,6 @@ config/settings.json
 __pycache__/
 *.pyc
 .claude/
+build/
+dist/
+*.manifest
