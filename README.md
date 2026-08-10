@@ -70,7 +70,21 @@ A semi-transparent panel appears at the top-left of the screen. While iRacing is
 closed or no valid session exists, the overlay shows `Waiting for iRacing...` /
 `Waiting for session...` rather than a made-up number.
 
-There is no title bar by design, so close it from the **system tray icon** → Exit.
+### Moving and closing it
+
+The overlay has two states, and it starts **unlocked** on a fresh install:
+
+| | Unlocked | Locked |
+|---|---|---|
+| Border | green | faint grey |
+| Header bar | visible: `mode`, `lock`, `✕` | hidden |
+| Mouse | drag the panel from anywhere on it | passes straight through to iRacing |
+
+So: **drag it anywhere you like, then press `lock`** (or `F9`) to make it
+click-through for driving. The position and the lock state are both remembered.
+
+To close it, click the **`✕`** on the header bar, or use the tray icon →
+*Quit Nishizumi SR*. Right-clicking the unlocked panel opens the same menu.
 
 ### Hotkeys
 
@@ -80,11 +94,20 @@ There is no title bar by design, so close it from the **system tray icon** → E
 | `F9` | lock / unlock (unlocked = drag to reposition; locked = click-through) |
 | `F10` | cycle the three modes: compact / normal / detailed |
 
-Configurable in `config/settings.json` → `hotkeys`. If hotkey registration fails,
-the app keeps working and the same controls remain on the tray icon.
+Configurable in `config/settings.json` → `hotkeys`.
 
 > **Platform note:** if iRacing runs as Administrator, this app must too, or
 > Windows will not deliver the global keyboard hook across privilege levels.
+> If no hotkey can be registered the app says so in the log and **leaves the
+> overlay unlocked**, so the header bar is always there to move and close it.
+
+### If you lose the overlay
+
+Left-click the tray icon (the green **SR** disc). That single action un-hides
+the overlay, pulls it back to the top-left corner and unlocks it — which covers
+every way it can go missing: hidden with `F8`, locked and forgotten, or parked
+on a monitor that is no longer plugged in. The same thing is on the tray menu as
+*Reset position*.
 
 ### Trying it in iRacing
 

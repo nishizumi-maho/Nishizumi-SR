@@ -39,6 +39,11 @@ class OverlaySettings:
     opacity: float = 0.85
     scale: float = 1.0
     mode: str = "normal"  # "compact" | "normal" | "detailed"
+    # Starts UNLOCKED on a fresh install: unlocked is the only state that shows
+    # the header bar, so a first-time user can drag the panel and close it
+    # without having to discover a hotkey or hunt for the tray icon. The choice
+    # is remembered from then on.
+    locked: bool = False
 
 
 @dataclass
