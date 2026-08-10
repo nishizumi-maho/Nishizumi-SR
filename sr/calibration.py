@@ -1,16 +1,14 @@
 """
-Analise do historico de sessoes reconciliadas e (opcionalmente) reajuste da
-janela movel do modelo em sr/model.py. O mapeamento CPI->SR NAO e' calibravel
-aqui: ele foi medido contra a API /data do iRacing (ver sr/license_map.py).
+Analyses the history of reconciled sessions and, optionally, re-tunes the
+rolling-average window used by sr/model.py. The CPI->SR mapping is NOT
+calibratable here: it was measured against iRacing's own result data
+(see sr/license_map.py).
 
-Nada aqui roda automaticamente durante uma sessao ao vivo - e' uma ferramenta
-separada (ver `python -m sr.calibration` no fim deste arquivo) porque:
-1. o briefing pede explicitamente para NAO usar machine learning de inicio e
-   para tratar isso como um passo manual/posterior (secao 12);
-2. reajustar parametros silenciosamente a cada sessao tornaria a estimativa
-   dificil de auditar, o que contraria o objetivo de transparencia (secao 10).
+Nothing here runs automatically during a live session. It is a separate tool
+(`python -m sr.calibration`) on purpose: silently re-tuning parameters every
+session would make the estimate hard to audit, which defeats the point.
 
-Uso tipico depois de acumular sessoes reconciliadas:
+Typical use once some reconciled sessions have accumulated:
     python -m sr.calibration
 """
 
@@ -21,16 +19,15 @@ from dataclasses import dataclass
 from typing import Optional
 
 from sr.license_map import class_index_from_string
-from sr.model import session_weight
-from sr.model import SRModelParams
+from sr.model import SRModelParams, session_weight
 
 logger = logging.getLogger("sr_estimator.calibration")
 
 MIN_SESSIONS_FOR_FIT = 8
 MIN_SESSIONS_PER_TRACK = 5
 
-# Os pesos por tipo de sessao vem de sr.model.SESSION_WEIGHTS (tabela oficial
-# do Sporting Code 3.6.1.1) e valem para curvas E incidentes.
+# Session weights come from sr.model.SESSION_WEIGHTS (the official Sporting
+# Code 3.6.1.1 table) and apply to corners AS WELL AS incidents.
 
 
 @dataclass
@@ -38,7 +35,7 @@ class CalibrationStats:
     n: int
     mean_error: float
     mean_absolute_error: float
-    bias: float  # igual a mean_error; mantido separado por clareza semantica
+    bias: float  # same as mean_error; kept separate for semantic clarity
 
 
 @dataclass
@@ -59,7 +56,7 @@ def confidence_level(n_reconciled_sessions: int) -> str:
 
 
 def _session_multiplier(record: dict) -> float:
-    """Peso do Sporting Code 3.6.1.1 - vale para curvas E incidentes."""
+    """Sporting Code 3.6.1.1 weight - applies to corners and incidents."""
     return session_weight(record.get("session_type"))
 
 
@@ -75,19 +72,18 @@ def compute_stats(history: list[dict]) -> Optional[CalibrationStats]:
 
 
 def fit_window_corners(history: list[dict]) -> Optional[SRModelParams]:
-    """Calibra a janela movel (`window_corners`) contra o historico real.
+    """Calibrate the rolling window against your own reconciled history.
 
-    O modelo v3 nao tem mais um "ganho" livre: a relacao CPI->SR foi medida
-    contra a API /data do iRacing e reproduz o numero oficial com MAE de
-    0.009 SR (ver sr/license_map.py). O unico passo ainda aproximado e' quanto
-    uma sessao desloca o CPI acumulado - e' isso que se calibra aqui, por
-    busca direta no erro de SR previsto (a relacao nao e' linear, entao
-    minimos quadrados fechado nao se aplica como no v2).
+    There is no free "gain" coefficient any more: the CPI->SR relationship was
+    measured and reproduces iRacing's own number to within ~0.007 SR (see
+    sr/license_map.py). The only approximate step left is how far one session
+    moves the accumulated CPI, and that is what gets tuned here - by direct
+    search on the predicted SR error, since the relationship is not linear.
     """
     reconciled = [r for r in history if r.get("reconciled") and r.get("actual_delta") is not None]
     if len(reconciled) < MIN_SESSIONS_FOR_FIT:
         logger.info(
-            "Apenas %s sessao(oes) reconciliada(s); minimo de %s para recalibrar. Mantendo parametros atuais.",
+            "Only %s reconciled session(s); %s needed to recalibrate. Keeping current parameters.",
             len(reconciled), MIN_SESSIONS_FOR_FIT,
         )
         return None
@@ -95,7 +91,7 @@ def fit_window_corners(history: list[dict]) -> Optional[SRModelParams]:
     from sr.model import project_sr
 
     def sse(window: float) -> float:
-        params = SRModelParams(window_corners=window)
+        params = SRModelParams(window_band1=window)
         total = 0.0
         for r in reconciled:
             sr0 = r.get("initial_sr")
@@ -105,36 +101,38 @@ def fit_window_corners(history: list[dict]) -> Optional[SRModelParams]:
             if idx is None:
                 continue
             mult = _session_multiplier(r)
+            band = int(sr0)
             _, delta, _ = project_sr(sr0, idx, r["corners"] * mult,
-                                     r["incidents"] * mult, params=params)
+                                     r["incidents"] * mult, band=band, params=params)
             total += (delta - r["actual_delta"]) ** 2
         return total
 
     best_w, best_v = None, None
-    for window in range(600, 6001, 25):
+    for window in range(400, 3001, 25):
         v = sse(float(window))
         if best_v is None or v < best_v:
             best_w, best_v = float(window), v
 
     if best_w is None:
-        logger.warning("Nao foi possivel calibrar a janela: nenhum registro utilizavel.")
+        logger.warning("Could not calibrate the window: no usable records.")
         return None
 
-    logger.info("Recalibracao sugerida: window_corners=%.0f (baseado em %s sessoes)",
+    logger.info("Suggested recalibration: window_band1=%.0f (based on %s sessions)",
                 best_w, len(reconciled))
-    return SRModelParams(window_corners=best_w)
+    return SRModelParams(window_band1=best_w)
 
 
-def calibrate_track_corners(history: list[dict], track_db, window_corners: float) -> list[TrackCalibrationResult]:
-    """Para pistas com sessoes reconciliadas suficientes, ajusta corners_per_lap
-    (a aproximacao local do Corner Multiplier real - fato confirmado, valores
-    nao publicos, ver docs/RESEARCH.md secao 1 e 6) pelo fator de escala medio
-    que teria feito o modelo bater com o actual_delta observado naquela pista,
-    dado o window_corners ja calibrado. Escreve de volta via
-    TrackDatabase.set_manual(..., source="calibrado_historico").
+def calibrate_track_corners(history: list[dict], track_db, window_band1: float) -> list[TrackCalibrationResult]:
+    """For tracks with enough reconciled sessions, adjust corners_per_lap by
+    the scale factor that would have made the model match the observed
+    actual_delta at that track. Writes back through
+    TrackDatabase.set_manual(..., source="calibrated_from_history").
 
-    So' roda quando chamado explicitamente (python -m sr.calibration) - nunca
-    durante uma sessao ao vivo, mesma regra do resto deste arquivo.
+    Only runs when invoked explicitly (python -m sr.calibration) - never during
+    a live session, same rule as the rest of this file.
+
+    Note: with the official corner table in tracks/official_corners.json this
+    is rarely needed; it remains useful if iRacing changes a layout's count.
     """
     reconciled = [
         r for r in history
@@ -146,7 +144,7 @@ def calibrate_track_corners(history: list[dict], track_db, window_corners: float
         by_track.setdefault(int(r["track_id"]), []).append(r)
 
     results: list[TrackCalibrationResult] = []
-    if window_corners <= 0:
+    if window_band1 <= 0:
         return results
     from sr.model import project_sr
 
@@ -158,10 +156,10 @@ def calibrate_track_corners(history: list[dict], track_db, window_corners: float
         if existing is None or existing.corners_per_lap <= 0:
             continue
 
-        # Procura o fator de escala das curvas desta pista que minimiza o erro
-        # de SR previsto. Substitui a inversao algebrica do v2, que so' era
-        # possivel porque o modelo antigo era linear.
-        params = SRModelParams(window_corners=window_corners)
+        # Search for the corner scale factor that minimises predicted SR error.
+        # Replaces v2's algebraic inversion, which only worked because the old
+        # model was linear.
+        params = SRModelParams(window_band1=window_band1)
         usable = [r for r in records
                   if r["corners"] > 0 and r.get("initial_sr") is not None
                   and class_index_from_string(r.get("license_class", "")) is not None]
@@ -175,7 +173,8 @@ def calibrate_track_corners(history: list[dict], track_db, window_corners: float
                 mult = _session_multiplier(r)
                 _, delta, _ = project_sr(r["initial_sr"], idx,
                                          r["corners"] * scale * mult,
-                                         r["incidents"] * mult, params=params)
+                                         r["incidents"] * mult,
+                                         band=int(r["initial_sr"]), params=params)
                 total += (delta - r["actual_delta"]) ** 2
             return total
 
@@ -186,8 +185,8 @@ def calibrate_track_corners(history: list[dict], track_db, window_corners: float
             if best_err is None or err < best_err:
                 best_scale, best_err = cand, err
 
-        # Nunca deixa a calibracao mais que triplicar ou reduzir a 1/3 sem
-        # revisao manual - mesma filosofia de clamp de sanidade do resto do projeto.
+        # Never let calibration more than triple or third a value without manual
+        # review - same sanity-clamp philosophy as the rest of the project.
         scale = max(0.3, min(3.0, best_scale))
 
         new_corners = round(existing.corners_per_lap * scale, 1)
@@ -195,7 +194,7 @@ def calibrate_track_corners(history: list[dict], track_db, window_corners: float
             continue
 
         track_db.set_manual(
-            track_id, existing.track_name, existing.config_name, new_corners, source="calibrado_historico"
+            track_id, existing.track_name, existing.config_name, new_corners, source="calibrated_from_history"
         )
         results.append(TrackCalibrationResult(
             track_id=track_id,
@@ -216,32 +215,32 @@ def _main() -> None:
     history = HistoryStore().all()
     stats = compute_stats(history)
     if stats is None:
-        print("Nenhuma sessao reconciliada ainda. Rode algumas sessoes primeiro.")
+        print("No reconciled sessions yet. Race a few sessions with the overlay running first.")
         return
 
-    print(f"Sessoes reconciliadas: {stats.n}")
-    print(f"Confianca: {confidence_level(stats.n)}")
-    print(f"Erro medio (bias): {stats.mean_error:+.3f}")
-    print(f"Erro absoluto medio (MAE): {stats.mean_absolute_error:.3f}")
+    print(f"Reconciled sessions: {stats.n}")
+    print(f"Confidence: {confidence_level(stats.n)}")
+    print(f"Mean error (bias): {stats.mean_error:+.3f}")
+    print(f"Mean absolute error (MAE): {stats.mean_absolute_error:.3f}")
 
     fitted = fit_window_corners(history)
     if fitted is None:
         return
 
-    print(f"\nSugestao de novo parametro (edite config/settings.json para aplicar):")
-    print(f"  window_corners = {fitted.window_corners:.0f}")
+    print("\nSuggested parameter (edit config/settings.json to apply):")
+    print(f"  window_band1 = {fitted.window_band1:.0f}")
 
     track_db = TrackDatabase()
-    track_results = calibrate_track_corners(history, track_db, fitted.window_corners)
+    track_results = calibrate_track_corners(history, track_db, fitted.window_band1)
     if track_results:
-        print(f"\n{len(track_results)} pista(s) recalibrada(s) em tracks/track_data.json:")
+        print(f"\n{len(track_results)} track(s) recalibrated in tracks/track_data.json:")
         for res in track_results:
             print(f"  {res.track_name} (id={res.track_id}): "
-                  f"{res.old_corners_per_lap:.1f} -> {res.new_corners_per_lap:.1f} curvas/volta "
-                  f"({res.n_sessions} sessoes)")
+                  f"{res.old_corners_per_lap:.1f} -> {res.new_corners_per_lap:.1f} corners/lap "
+                  f"({res.n_sessions} sessions)")
     else:
-        print("\nNenhuma pista com sessoes suficientes ainda pra recalibrar "
-              f"(minimo {MIN_SESSIONS_PER_TRACK} sessoes reconciliadas na mesma pista).")
+        print("\nNo track has enough sessions to recalibrate yet "
+              f"(minimum {MIN_SESSIONS_PER_TRACK} reconciled sessions at the same track).")
 
 
 if __name__ == "__main__":

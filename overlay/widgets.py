@@ -1,6 +1,7 @@
 """
-Funcoes puras de formatacao de texto (HTML simples, compativel com QLabel) para
-cada modo do overlay. Nao ha calculo aqui, so apresentacao.
+Text formatting for each overlay mode (compact / normal / detailed).
+
+Presentation only - no calculation happens here.
 """
 
 from __future__ import annotations
@@ -22,7 +23,7 @@ SESSION_TYPE_LABELS = {
 
 def _cpi_text(cpi: Optional[float]) -> str:
     # "Clean" em vez do simbolo de infinito: mais legivel de relance durante a
-    # corrida, e evita a leitura de "algo quebrou" quando so' significa 0 incidentes.
+    # race, and avoids reading as "something broke" when it just means 0 incidents.
     return "Clean" if cpi is None else f"{cpi:.1f}"
 
 
@@ -36,7 +37,7 @@ def format_waiting(message: str) -> str:
 
 def format_practice_notice(estimate: SREstimate) -> str:
     return (
-        f'<span style="color:{COLOR_WARNING};">PRACTICE (nao conta para o SR)</span><br>'
+        f'<span style="color:{COLOR_WARNING};">PRACTICE (does not count towards SR)</span><br>'
         f'<span style="color:{COLOR_TEXT_DIM};">Curvas: {estimate.corners:.0f} '
         f'&nbsp;|&nbsp; Incidentes: {estimate.incidents}x</span>'
     )

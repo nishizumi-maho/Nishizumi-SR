@@ -1,10 +1,8 @@
 """
-Wrapper fino sobre o pyirsdk (pacote `irsdk`).
+Thin wrapper over pyirsdk.
 
-Isola as particularidades da biblioteca (startup/shutdown, checagem de conexao,
-leitura defensiva de chaves que podem nao existir em builds mais antigas do
-simulador) do resto do aplicativo. Ver docs/RESEARCH.md secao 3 para as fontes
-de cada variavel usada aqui.
+Handles connection state and defensive reads of keys that may not exist on
+older builds of the simulator.
 """
 
 from __future__ import annotations
@@ -29,11 +27,11 @@ class IRacingSDK:
         return self._ir
 
     def poll(self) -> bool:
-        """Chamar uma vez por tick. Retorna True se ha uma sessao viva do iRacing."""
+        """Call once per tick. True when a live iRacing session is available."""
         if not self._ir.is_initialized:
             try:
                 self._ir.startup()
-            except Exception as exc:  # a lib pode lancar se o simulador nao estiver de pe
+            except Exception as exc:  # the lib can raise if the sim is not running
                 logger.debug("startup() falhou: %s", exc)
 
         is_connected = bool(getattr(self._ir, "is_initialized", False) and self._ir.is_connected)
@@ -51,7 +49,7 @@ class IRacingSDK:
         return is_connected
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Leitura defensiva de uma chave de telemetria ou de YAML de sessao."""
+        """Defensive read of a telemetry key or a session-YAML key."""
         if not getattr(self._ir, "is_initialized", False):
             return default
         try:

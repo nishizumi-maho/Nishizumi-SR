@@ -1,25 +1,24 @@
-"""OBSOLETO - mantido apenas como ponte para sr/license_map.py.
+"""
+DEPRECATED - kept only as a bridge to sr/license_map.py.
 
-Este modulo continha as estimativas da COMUNIDADE para o CPI alvo por classe
-("~15-20 corners per incident em D", "~70-80 em A"), interpoladas linearmente
-para C e B. Em 2026-08-09 esses numeros foram substituidos por medicao direta:
-lendo a API /data do iRacing (campos oficiais `old_cpi`/`new_cpi` junto de
-`old_sub_level`/`old_license_level`), 1.280 pares reais (SR, CPI, licenca)
-revelaram o mapeamento exato - ver sr/license_map.py.
+This module used to hold the COMMUNITY estimates of target CPI per licence
+class ("~15-20 corners per incident at D", "~70-80 at A"), linearly
+interpolated for C and B. Those numbers were replaced by direct measurement
+against iRacing's own result data - see sr/license_map.py.
 
-O que mudou na pratica:
+What actually changed:
 
-    classe   comunidade (v2)   medido (v3)
-    D             17.5            15.7      <- a faixa "15-20" batia
+    class    community (v2)   measured (v3)
+    D             17.5            15.7      <- the "15-20" range held up
     C             36.7            22.9
     B             55.8            33.3
-    A             75.0            48.5      <- "70-80" estava bem alto
+    A             75.0            48.5      <- "70-80" was well over
 
-Alem disso a progressao entre classes nao e' linear (como o v2 assumia) e sim
-geometrica, de razao ~1.456 por degrau.
+The progression between classes is also geometric (ratio ~1.456), not linear
+as v2 assumed.
 
-Nada no projeto importa mais este arquivo. Ele so' continua aqui para que um
-import antigo nao quebre - e delegando, para que os numeros nunca divirjam.
+Nothing in the project imports this any more. It stays so an old import does
+not break, and it delegates so the numbers can never diverge.
 """
 
 from __future__ import annotations

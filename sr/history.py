@@ -1,22 +1,17 @@
 """
-Persistencia do historico de sessoes (data/history.json) e reconciliacao com
-o SR real observado depois.
+Session history persistence (data/history.json) and reconciliation against the
+real Safety Rating.
 
-Por que "reconciliacao" e nao captura direta do SR final:
-o SDK nao garante que o SR exibido (LicSubLevel) ja reflita o resultado da
-sessao que acabou de terminar no exato instante em que ela termina - o
-iRacing pode levar um instante para processar o resultado. O que E' confiavel
-e' que, quando uma NOVA sessao comeca (ou o app reconecta antes de qualquer
-volta rodada), o SR lido naquele momento ja incorpora o resultado de
-qualquer sessao pontuavel anterior. Por isso: toda sessao pontuavel termina
-como registro "pendente" (actual_delta=None) e e' reconciliada na proxima vez
-que um SR inicial fresco for lido.
+Why "reconciliation" rather than reading the final SR directly: the SDK does
+not guarantee that the displayed SR (LicSubLevel) already reflects the session
+that just ended at the exact moment it ends. What it does guarantee is that
+when a NEW session starts, the SR being reported already accounts for any
+previous scoreable session. So every scoreable session is written as pending,
+and gets filled in the next time a session starts.
 
-Limitacao documentada: SR e' separado por categoria (oval/road/dirt) e este
-mecanismo simples reconcilia com o ULTIMO pendente, sem checar categoria. Para
-quem corre so uma categoria por dia isso e' preciso; para quem alterna
-categorias no mesmo dia, pode reconciliar com a sessao errada. Ver
-docs/RESEARCH.md e README (proximos passos) para o refinamento planejado.
+Known limitation: reconciliation always uses the last pending record without
+checking category (oval / road / dirt). Accurate for one category per day; it
+can reconcile against the wrong session if you alternate.
 """
 
 from __future__ import annotations
@@ -78,7 +73,7 @@ class HistoryStore:
     def append(self, record: SessionRecord) -> None:
         self._records.append(asdict(record))
         self._save()
-        logger.info("Sessao salva no historico (pendente de reconciliacao com SR real)")
+        logger.info("Session saved to history (pending reconciliation against the real SR)")
 
     def find_last_pending(self) -> Optional[dict]:
         for record in reversed(self._records):

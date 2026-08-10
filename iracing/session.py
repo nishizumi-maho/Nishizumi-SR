@@ -1,6 +1,7 @@
 """
-Interpretacao dos blocos YAML de sessao do iRacing (WeekendInfo, DriverInfo,
-SessionInfo). Ver docs/RESEARCH.md secao 3 para a origem/confianca de cada campo.
+Parses iRacing's session YAML blocks (WeekendInfo, DriverInfo, SessionInfo).
+
+See docs/RESEARCH.md section 7 for the origin and confidence of each field.
 """
 
 from __future__ import annotations
@@ -35,7 +36,7 @@ class PlayerInfo:
     lic_string: str
     lic_level: Optional[int]  # LicLevel do SDK (1..24): classe + faixa de SR
     lic_sub_level: Optional[int]
-    safety_rating: Optional[float]  # None quando nao foi possivel determinar (nao inventamos)
+    safety_rating: Optional[float]  # None when undeterminable - never invented
 
 
 @dataclass
@@ -44,7 +45,7 @@ class SessionMeta:
     session_type_raw: str
     session_type: str  # classificado: "practice" | "qualify" | "warmup" | "race" | "time_trial" | "unknown"
     session_name: str
-    session_laps: Optional[int]  # None quando a sessao e' por tempo, nao por numero de voltas
+    session_laps: Optional[int]  # None when the session is timed rather than lap-limited
 
 
 def get_track_info(sdk: IRacingSDK) -> Optional[TrackInfo]:
@@ -76,18 +77,18 @@ def _parse_lic_level(value: object) -> Optional[int]:
         return None
     if 1 <= level <= 24:
         return level
-    logger.warning("LicLevel=%r fora da faixa 1..24, ignorando", value)
+    logger.warning("LicLevel=%r outside the 1..24 range; ignoring", value)
     return None
 
 
 def _parse_sr(lic_sub_level: object, lic_string: str) -> Optional[float]:
-    # Hipotese de alta confianca (nao documentada oficialmente, ver RESEARCH.md 3.3):
+    # High-confidence convention (not formally documented, see RESEARCH.md section 7):
     # LicSubLevel costuma ser SR * 100.
     if isinstance(lic_sub_level, (int, float)) and lic_sub_level > 0:
         candidate = lic_sub_level / 100.0
         if 0.0 <= candidate <= 5.0:
             return round(candidate, 2)
-        logger.warning("LicSubLevel=%s fora da faixa plausivel, ignorando", lic_sub_level)
+        logger.warning("LicSubLevel=%s outside the plausible range; ignoring", lic_sub_level)
 
     # Fallback: extrai o numero final de algo como "A 4.99" ou "Rookie 1.34".
     match = _LIC_STRING_NUMBER_RE.search(lic_string or "")
@@ -99,7 +100,7 @@ def _parse_sr(lic_sub_level: object, lic_string: str) -> Optional[float]:
         except ValueError:
             pass
 
-    logger.warning("Nao foi possivel determinar SR a partir de LicSubLevel=%r LicString=%r",
+    logger.warning("Could not determine SR from LicSubLevel=%r LicString=%r",
                     lic_sub_level, lic_string)
     return None
 
@@ -119,7 +120,7 @@ def get_player_info(sdk: IRacingSDK) -> Optional[PlayerInfo]:
     drivers = driver_info.get("Drivers") or []
     player_raw = next((d for d in drivers if int(d.get("CarIdx", -1)) == player_car_idx), None)
     if player_raw is None:
-        logger.warning("PlayerCarIdx=%s nao encontrado na lista Drivers", player_car_idx)
+        logger.warning("PlayerCarIdx=%s not found in the Drivers list", player_car_idx)
         return None
 
     lic_sub_level = player_raw.get("LicSubLevel")
@@ -139,7 +140,7 @@ def get_player_info(sdk: IRacingSDK) -> Optional[PlayerInfo]:
 
 
 def classify_session(session_type_raw: str) -> str:
-    """Classificacao por substring: nao ha lista oficial fechada de valores
+    """Substring matching: there is no closed official list of values
     possiveis de SessionType (ver RESEARCH.md 3.4)."""
     s = (session_type_raw or "").lower()
     if "time trial" in s:
@@ -169,7 +170,7 @@ def get_session_meta(sdk: IRacingSDK, session_num: int) -> Optional[SessionMeta]
     try:
         laps_int = int(laps)
     except (TypeError, ValueError):
-        laps_int = None  # sessao por tempo (ex.: "unlimited") em vez de por numero de voltas
+        laps_int = None  # timed session (e.g. "unlimited") rather than lap-limited
 
     session_type_raw = str(raw.get("SessionType", ""))
     return SessionMeta(

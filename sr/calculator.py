@@ -1,10 +1,10 @@
 """
-Acumulador de estimativa de SR para a sessao atual.
+Per-session SR estimate accumulator.
 
-Fluxo (briefing secao 5): captura SR/incidentes iniciais -> a cada volta
-completada soma curvas -> recalcula incidentes acumulados -> recalcula CPI ->
-recalcula estimativa. A UI pode atualizar continuamente, mas o calculo pesado
-so roda em on_lap_completed().
+Flow: capture the starting SR and incident count -> corners accumulate by
+distance every tick -> incidents are re-read -> CPI and the estimate are
+recomputed. The UI can refresh continuously, but the logged calculation only
+runs in on_lap_completed().
 """
 
 from __future__ import annotations
@@ -47,7 +47,7 @@ class SessionSRTracker:
         self.confidence: str = "Low"
         self.target_cpi: float = 0.0
         self._target_cpi_confidence: str = "fallback"
-        self.class_index: int = 2   # C ate a licenca real ser lida
+        self.class_index: int = 2   # C until the real licence is read
         self.band: int = 2
 
         self.accumulated_corners: float = 0.0
@@ -73,17 +73,18 @@ class SessionSRTracker:
         self.accumulated_corners = 0.0
         self.laps_completed = 0
 
-        # LicLevel (1..24) carrega classe E faixa de SR; e' a fonte preferida.
-        # LicString ("B 3.54") so' da a classe, entao a banda vem do SR.
+        # LicLevel (1..24) carries both the class AND the SR band, so it is the
+        # preferred source. LicString ("B 3.54") only gives the class, in which
+        # case the band has to come from the SR itself.
         if lic_level:
             self.class_index, self.band = class_and_band_from_license_level(lic_level)
             self._target_cpi_confidence = "sdk_lic_level"
         else:
             idx = class_index_from_string(lic_string)
             if idx is None:
-                idx = 2  # C: meio da tabela, so' pra nao travar
+                idx = 2  # C: middle of the table, purely so nothing crashes
                 self._target_cpi_confidence = "fallback"
-                logger.warning("Classe de licenca desconhecida em lic_string=%r; usando C", lic_string)
+                logger.warning("Unrecognised licence class in lic_string=%r; assuming C", lic_string)
             else:
                 self._target_cpi_confidence = "lic_string"
             self.class_index = idx
@@ -91,30 +92,30 @@ class SessionSRTracker:
 
         self.target_cpi = target_cpi_to_hold(self.class_index)
         logger.info(
-            "Licenca: classe_idx=%s banda=%s (fonte=%s) | CPI para segurar 3.00 = %.1f",
+            "Licence: class_idx=%s band=%s (source=%s) | CPI to hold 3.00 = %.1f",
             self.class_index, self.band, self._target_cpi_confidence, self.target_cpi,
         )
 
     def set_corners(self, corners: float) -> None:
-        """Curvas percorridas ate agora, medidas por DISTANCIA.
+        """Corners driven so far, measured by DISTANCE.
 
-        Vem de iracing.telemetry.CornerAccumulator, que conta fracao de volta
-        real - assim um tow logo apos os boxes ou uma volta abandonada nao
-        credita curvas que o piloto nao dirigiu, e uma volta parcial credita
-        as curvas que ele dirigiu de fato.
+        Comes from iracing.telemetry.CornerAccumulator, which counts real lap
+        fractions - so a tow just after the pits or an abandoned lap does not
+        credit corners the driver never drove, and a partial lap still credits
+        the corners they did.
         """
         self.accumulated_corners = max(0.0, float(corners))
 
     def on_lap_completed(self, current_incident_count: int, session_multiplier: float = 1.0) -> SREstimate:
-        """Unico ponto onde o calculo 'pesado' roda e e' logado (briefing secao 24:
-        UI pode atualizar continuamente, mas o calculo principal e' por volta).
+        """The one place the calculation is logged (the UI may refresh every
+        tick, but the main computation is per lap).
 
-        As curvas NAO sao somadas aqui - elas ja vem de set_corners(), por
-        distancia percorrida."""
+        Corners are NOT added here - they already arrive via set_corners(),
+        measured by distance driven."""
         self.laps_completed += 1
         self._last_incident_count = current_incident_count
         logger.info("Lap completed: %s", self.laps_completed)
-        logger.info("Corners (por distancia): %.1f", self.accumulated_corners)
+        logger.info("Corners (by distance): %.1f", self.accumulated_corners)
 
         estimate = self._compute(session_multiplier)
 
@@ -124,17 +125,17 @@ class SessionSRTracker:
         return estimate
 
     def snapshot(self, session_multiplier: float = 1.0) -> SREstimate:
-        """Recalcula sem logar - usado para refrescar a UI a cada tick sem
-        gerar log/CPU extra (briefing secao 24)."""
+        """Recompute without logging - used to refresh the UI every tick
+        without extra log spam or CPU."""
         return self._compute(session_multiplier)
 
     def _compute(self, session_multiplier: float) -> SREstimate:
         raw_incidents = self._last_incident_count - self._initial_incident_count
         incidents = max(0, raw_incidents)
 
-        # Sporting Code 3.6.1.1: o multiplicador de sessao e' de "Corner AND
-        # Incident" - pondera curvas E incidentes. Ponderar so' os incidentes
-        # (como fazia o v2) inflava o CPI de qualify/TT indevidamente.
+        # Sporting Code 3.6.1.1: the multiplier is a "Corner AND Incident"
+        # one - it weights corners as well as incidents. Weighting only the
+        # incidents (as v2 did) wrongly inflated CPI in qualify/TT sessions.
         weighted_incidents = incidents * session_multiplier
         weighted_corners = self.accumulated_corners * session_multiplier
 

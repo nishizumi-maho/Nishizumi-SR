@@ -1,15 +1,15 @@
 """
-Base local de "curvas por volta" por pista/configuracao.
+Local database of "corners per lap" by track configuration.
 
-Estrategia (ver docs/RESEARCH.md secao 6):
-1. Procura por TrackID (unico por configuracao especifica, ex.: Nordschleife
-   vs Combined vs GP sao TrackID diferentes) numa entrada manual/curada.
-2. Se nao existir, usa TrackNumTurns do SDK como aproximacao e salva a
-   entrada automaticamente (fonte + confianca marcadas), para poder ser
-   corrigida a mao depois.
-3. Se nem isso existir, usa um valor de seguranca fixo (fallback_corners_per_lap).
+Resolution order (see docs/RESEARCH.md section 2):
+1. A cached or manually curated entry, keyed by TrackID (unique per specific
+   configuration - Nordschleife, Combined and GP all have different TrackIDs).
+2. The official iRacing value from tracks/official_corners.json.
+3. TrackNumTurns from the SDK, saved automatically with its source and
+   confidence marked so it can be corrected later.
+4. A fixed safety value (fallback_corners_per_lap).
 
-Nunca assume um numero "magico" de curvas sem deixar registrado de onde veio.
+Never assumes a "magic" corner count without recording where it came from.
 """
 
 from __future__ import annotations
@@ -28,15 +28,15 @@ OFFICIAL_CORNERS_PATH = Path(__file__).resolve().parent / "official_corners.json
 
 
 def _load_official_corners() -> dict:
-    """Base OFICIAL de curvas/volta (endpoint /data/track/get do iRacing).
+    """OFFICIAL corners-per-lap table (iRacing /data/track/get endpoint).
 
-    436 pistas, chaveadas pelo mesmo `track_id` que o SDK expoe como `TrackID`.
-    Se o arquivo sumir, o app continua funcionando com TrackNumTurns do SDK.
+    436 tracks, keyed by the same `track_id` the SDK exposes as `TrackID`.
+    If the file goes missing the app still works via the SDK's TrackNumTurns.
     """
     try:
         raw = json.loads(OFFICIAL_CORNERS_PATH.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
-        logger.warning("Base oficial de curvas indisponivel (%s); caindo para o SDK", exc)
+        logger.warning("Official corner table unavailable (%s); falling back to the SDK", exc)
         return {}
     return {int(t["track_id"]): t for t in raw.get("tracks", []) if t.get("corners_per_lap")}
 
@@ -52,8 +52,8 @@ class TrackRecord:
     track_name: str
     config_name: str
     corners_per_lap: float
-    source: str  # "manual" | "sdk_track_num_turns" | "fallback_generico"
-    confidence: str  # "alta" | "baixa" | "muito_baixa"
+    source: str  # "manual" | "iracing_data_api" | "sdk_track_num_turns" | "generic_fallback"
+    confidence: str  # "high" | "low" | "very_low"
     updated_at: str
 
 
@@ -71,7 +71,7 @@ class TrackDatabase:
         try:
             raw = json.loads(self._path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError) as exc:
-            logger.error("Falha ao ler track_data.json (%s), comecando vazio", exc)
+            logger.error("Could not read track_data.json (%s); starting empty", exc)
             raw = []
         self._records = {int(r["track_id"]): TrackRecord(**r) for r in raw}
 
@@ -86,14 +86,14 @@ class TrackDatabase:
         config_name: str,
         sdk_num_turns: int,
     ) -> tuple[float, str, str]:
-        """Retorna (corners_per_lap, source, confidence)."""
+        """Returns (corners_per_lap, source, confidence)."""
         existing = self._records.get(track_id)
         if existing is not None:
             return existing.corners_per_lap, existing.source, existing.confidence
 
-        # 1a opcao: valor OFICIAL do iRacing (tracks/official_corners.json,
-        # extraido do endpoint /data/track/get - 436 pistas). E' exatamente o
-        # numero que o calculo de SR usa, entao nao ha por que preferir o SDK.
+        # First choice: the OFFICIAL iRacing value (tracks/official_corners.json,
+        # from the /data/track/get endpoint - 436 tracks). This is exactly the
+        # number the SR calculation uses, so there is no reason to prefer the SDK.
         official = _OFFICIAL_CORNERS.get(track_id)
         if official is not None:
             record = TrackRecord(
@@ -102,20 +102,20 @@ class TrackDatabase:
                 config_name=config_name or official.get("config_name", ""),
                 corners_per_lap=float(official["corners_per_lap"]),
                 source="iracing_data_api",
-                confidence="alta",
+                confidence="high",
                 updated_at=datetime.now(timezone.utc).isoformat(),
             )
             self._records[track_id] = record
             self._save()
-            logger.info("Pista resolvida pela base oficial: %s (%s) -> %s curvas/volta",
+            logger.info("Track resolved from the official table: %s (%s) -> %s corners/lap",
                         record.track_name, record.config_name, record.corners_per_lap)
             if sdk_num_turns and sdk_num_turns > 0 and int(sdk_num_turns) != int(record.corners_per_lap):
-                # Divergencia observada em Nordschleife Industriefahrten (SDK/
-                # subsession 73 vs base oficial 154). Vale registrar em vez de
-                # engolir: o valor da sessao ao vivo e' o que aquele evento usou.
+                # Divergence seen at Nordschleife Industriefahrten (SDK/subsession
+                # 73 vs official table 154). Worth logging rather than hiding: the
+                # live session's value is what that event actually used.
                 logger.warning(
-                    "TrackNumTurns do SDK (%s) difere da base oficial (%s) para track_id=%s; "
-                    "usando o do SDK por ser o valor daquela sessao",
+                    "SDK TrackNumTurns (%s) differs from the official table (%s) for "
+                    "track_id=%s; using the SDK value as it is that session's own",
                     sdk_num_turns, record.corners_per_lap, track_id,
                 )
                 record.corners_per_lap = float(sdk_num_turns)
@@ -130,20 +130,20 @@ class TrackDatabase:
                 config_name=config_name,
                 corners_per_lap=float(sdk_num_turns),
                 source="sdk_track_num_turns",
-                confidence="baixa",
+                confidence="low",
                 updated_at=datetime.now(timezone.utc).isoformat(),
             )
             self._records[track_id] = record
             self._save()
-            logger.info("Pista nova aprendida via SDK: %s (%s) -> %s curvas/volta [confianca baixa]",
+            logger.info("New track learned from the SDK: %s (%s) -> %s corners/lap [low confidence]",
                         track_name, config_name, sdk_num_turns)
             return record.corners_per_lap, record.source, record.confidence
 
         logger.warning(
-            "TrackNumTurns indisponivel para %s (%s); usando fallback generico de %s curvas/volta",
+            "TrackNumTurns unavailable for %s (%s); using the generic fallback of %s corners/lap",
             track_name, config_name, self._fallback,
         )
-        return float(self._fallback), "fallback_generico", "muito_baixa"
+        return float(self._fallback), "generic_fallback", "very_low"
 
     def get_record(self, track_id: int) -> Optional[TrackRecord]:
         return self._records.get(track_id)
@@ -156,18 +156,17 @@ class TrackDatabase:
         corners_per_lap: float,
         source: str = "manual",
     ) -> None:
-        """Permite correcao manual (edicao do arquivo tambem funciona) ou,
-        com source="calibrado_historico", a atualizacao feita por
-        sr/calibration.py::calibrate_track_corners a partir de sessoes reais
-        reconciliadas - em ambos os casos vira confidence="alta" porque a
-        fonte deixou de ser a aproximacao crua do SDK."""
+        """Manual correction (editing the file works too), or the update made by
+        sr/calibration.py::calibrate_track_corners from reconciled real sessions.
+        Either way confidence becomes "high", because the source is no longer the
+        SDK's raw approximation."""
         self._records[track_id] = TrackRecord(
             track_id=track_id,
             track_name=track_name,
             config_name=config_name,
             corners_per_lap=corners_per_lap,
             source=source,
-            confidence="alta",
+            confidence="high",
             updated_at=datetime.now(timezone.utc).isoformat(),
         )
         self._save()

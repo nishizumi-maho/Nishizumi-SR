@@ -1,14 +1,11 @@
 """
-Janela do overlay: transparente, sem bordas, sempre no topo, click-through por
-padrao (nao bloqueia o mouse no iRacing), reposicionavel via modo "unlock".
+Frameless, semi-transparent PySide6 overlay window.
 
-Click-through e implementado via Qt.WA_TransparentForMouseEvents (traduzido
-pelo Qt para WS_EX_TRANSPARENT/WS_EX_LAYERED no Windows) - nao ha necessidade
-de chamadas diretas ao Win32 API.
-
-Hotkeys globais (funcionam mesmo com o iRacing em foco) usam a biblioteca
-`keyboard`, que roda um listener em thread separada; o sinal Qt cruza a
-thread de forma segura (fila de eventos padrao do Qt).
+Click-through by default so it never blocks the mouse in iRacing, and
+repositionable in "unlock" mode. Click-through uses the Qt window flags that
+map to WS_EX_TRANSPARENT / WS_EX_LAYERED on Windows, so no native calls are
+needed. Updates arrive from the polling thread through Qt's normal event
+queue, which is thread-safe.
 """
 
 from __future__ import annotations

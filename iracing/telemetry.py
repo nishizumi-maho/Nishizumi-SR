@@ -1,9 +1,8 @@
 """
-Leitura de telemetria por tick e deteccao de volta completada.
+Per-tick telemetry reads, lap detection and corner accumulation.
 
-Mantido deliberadamente simples/barato: nenhum calculo pesado acontece aqui.
-O calculo da estimativa de SR so acontece quando uma volta e' completada
-(ver sr/calculator.py), conforme pedido no briefing (secao 5 e 24).
+Deliberately cheap: no heavy work happens here. The SR estimate itself is only
+recomputed on lap completion (see sr/calculator.py).
 """
 
 from __future__ import annotations
@@ -16,14 +15,14 @@ from iracing.sdk import IRacingSDK
 
 logger = logging.getLogger("sr_estimator.telemetry")
 
-# irsdk_TrkLoc - constante estavel do SDK, ver RESEARCH.md 3.6
+# irsdk_TrkLoc - stable SDK constant, see RESEARCH.md section 7
 TRK_LOC_NOT_IN_WORLD = -1
 TRK_LOC_OFF_TRACK = 0
 TRK_LOC_IN_PIT_STALL = 1
 TRK_LOC_APPROACHING_PITS = 2
 TRK_LOC_ON_TRACK = 3
 
-# irsdk_SessionState - confirmado no codigo-fonte do irsdk.py, ver RESEARCH.md 3.1
+# irsdk_SessionState - confirmed in the irsdk.py source, see RESEARCH.md section 7
 SESSION_STATE_INVALID = 0
 SESSION_STATE_GET_IN_CAR = 1
 SESSION_STATE_WARMUP = 2
@@ -50,8 +49,8 @@ _incident_source_logged = False
 
 
 def _pick_incident_count(sdk: IRacingSDK) -> tuple[int, str]:
-    """PlayerCarMyIncidentCount isola o piloto local mesmo em trocas de piloto
-    (ver RESEARCH.md secao 4). Cai para IncidentCount em builds antigas."""
+    """PlayerCarMyIncidentCount isolates the local driver even across driver
+    swaps (RESEARCH.md section 7). Falls back to IncidentCount on older builds."""
     global _incident_source_logged
     value = sdk.get("PlayerCarMyIncidentCount")
     if isinstance(value, (int, float)):
@@ -61,7 +60,7 @@ def _pick_incident_count(sdk: IRacingSDK) -> tuple[int, str]:
         source = "IncidentCount"
 
     if not _incident_source_logged:
-        logger.info("Usando '%s' como fonte de incidentes", source)
+        logger.info("Using '%s' as the incident source", source)
         _incident_source_logged = True
 
     return int(value or 0), source
@@ -89,30 +88,27 @@ def read_snapshot(sdk: IRacingSDK) -> Optional[TelemetrySnapshot]:
 
 
 class CornerAccumulator:
-    """Conta curvas pela DISTANCIA realmente percorrida, nao por volta contada.
+    """Counts corners by DISTANCE actually driven, not by laps counted.
 
-    POR QUE (caso real levantado pelo usuario, 2026-08-09): em Nurburgring
-    e' comum o piloto pedir tow logo depois dos boxes ou simplesmente nao
-    terminar a volta. O contador de voltas pode andar, mas o piloto nao
-    dirigiu aquelas curvas - e o CPI do iRacing e' sobre curvas percorridas.
-    Somar `corners_per_lap` a cada volta contada superestimaria as curvas
-    exatamente nesses casos.
+    Why: at Nurburgring it is common to take a tow just after the pits, or to
+    simply not finish a lap. The lap counter can move without the driver having
+    driven those corners - and iRacing's CPI is about corners driven. Adding
+    `corners_per_lap` per counted lap would overcount in exactly those cases.
 
-    O inverso tambem acontece e aparece nos dados reais desta conta: a
-    subsession 87831243 registra 0 voltas completas, 2 incidentes e uma
-    mudanca de SR de verdade (-0.06) - ou seja, o iRacing creditou as curvas
-    de uma volta PARCIAL. Contar por distancia resolve os dois lados.
+    The reverse happens too, and shows up in real results: records exist with
+    0 completed laps, 2 incidents and a genuine -0.06 SR change, meaning iRacing
+    credited the corners of a PARTIAL lap. Counting by distance fixes both sides.
 
-    Regras:
-    - so' acumula quando o carro esta de fato no mundo e fora do box;
-    - `LapDistPct` que volta a zero e' tratado como fim de volta;
-    - um salto grande de distancia num unico tick (tow, teleporte, reset)
-      nao e' creditado: apenas ressincroniza a referencia.
+    Rules:
+    - only accumulates while the car is in the world and out of the pit box;
+    - `LapDistPct` wrapping back to zero is treated as a lap boundary;
+    - a large single-tick distance jump (tow, teleport, reset) is not credited;
+      it only resynchronises the reference point.
     """
 
-    # Fracao maxima de volta plausivel em um unico tick. Com polling de 100ms,
-    # ate um carro rapido numa pista curta faz muito menos que isso; um tow ou
-    # teleporte faz muito mais. Valor folgado de proposito.
+    # Largest plausible fraction of a lap in a single tick. At 100ms polling
+    # even a fast car on a short track covers far less; a tow or teleport covers
+    # far more. Deliberately generous.
     MAX_TICK_FRACTION = 0.10
 
     def __init__(self) -> None:
@@ -128,12 +124,12 @@ class CornerAccumulator:
         self.skipped_jumps = 0
 
     def update(self, snap: "TelemetrySnapshot", corners_per_lap: float) -> float:
-        """Acumula e retorna quantas curvas foram creditadas neste tick."""
+        """Accumulate and return how many corners were credited this tick."""
         in_world = snap.player_track_surface not in (
             TRK_LOC_NOT_IN_WORLD, TRK_LOC_IN_PIT_STALL,
         )
         if not in_world:
-            # No box / fora do mundo: nao dirige curvas e a posicao pode pular.
+            # In the pit box or out of the world: no corners, and position may jump.
             self._prev_pct = None
             return 0.0
 
@@ -148,12 +144,12 @@ class CornerAccumulator:
 
         delta = pct - self._prev_pct
         if delta < 0.0:
-            delta += 1.0  # cruzou a linha de chegada
+            delta += 1.0  # crossed the start/finish line
 
         if delta > self.MAX_TICK_FRACTION:
-            # Tow, teleporte, reset de sessao ou app pausado: nao inventa curvas.
+            # Tow, teleport, session reset or a paused app: invent no corners.
             self.skipped_jumps += 1
-            logger.debug("Salto de distancia ignorado (%.3f de volta)", delta)
+            logger.debug("Ignored distance jump (%.3f of a lap)", delta)
             self._prev_pct = pct
             return 0.0
 
@@ -165,7 +161,7 @@ class CornerAccumulator:
 
 
 class LapDetector:
-    """Detecta o momento em que uma volta e' completada, por sessao."""
+    """Detects the moment a lap is completed, per session."""
 
     def __init__(self) -> None:
         self._last_lap: Optional[int] = None
@@ -176,7 +172,7 @@ class LapDetector:
         self._last_lap = current_lap
 
     def update(self, session_num: int, current_lap: int) -> bool:
-        """Retorna True exatamente uma vez por incremento de volta."""
+        """Returns True exactly once per lap increment."""
         if self._session_num != session_num or self._last_lap is None:
             self.reset(session_num, current_lap)
             return False
@@ -186,9 +182,9 @@ class LapDetector:
             return True
 
         if current_lap < self._last_lap:
-            # sessao reiniciada/voltou (ex.: sair e reentrar nos boxes de forma
-            # incomum) - nao trata como volta completada, apenas realinha.
-            logger.warning("Numero de volta regrediu (%s -> %s); realinhando",
+            # Session restarted or went backwards - do not treat this as a
+            # completed lap, just realign.
+            logger.warning("Lap number went backwards (%s -> %s); realigning",
                             self._last_lap, current_lap)
             self._last_lap = current_lap
         return False

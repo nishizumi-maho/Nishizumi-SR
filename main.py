@@ -1,8 +1,8 @@
 """
-iRacing Safety Rating Live Estimator - ponto de entrada.
+Nishizumi SR - entry point.
 
-Junta SDK, calculo de estimativa, historico/calibracao e overlay PySide6.
-Ver docs/RESEARCH.md para o que e fato, hipotese ou aproximacao neste projeto.
+Wires together the iRacing SDK, the SR estimate, history/calibration and the
+PySide6 overlay.
 """
 
 from __future__ import annotations
@@ -163,7 +163,7 @@ def main() -> None:
         hotkeys = None
 
     # --- system tray: unica forma de fechar o app de forma limpa, ja que o
-    # overlay nao tem barra de titulo/botao de fechar de proposito. ---
+    # the overlay deliberately has no title bar or close button. ---
     tray = QSystemTrayIcon(make_tray_icon())
     tray.setToolTip("iRacing SR Estimator")
     menu = QMenu()
@@ -207,7 +207,7 @@ def main() -> None:
         state.session_complete_ticks_remaining = SESSION_COMPLETE_DISPLAY_SECONDS * ticks_per_second
 
     def handle_new_session(session_num: int, current_incident_count: int, current_lap: int) -> None:
-        # Fecha a sessao anterior caso a transicao tenha pulado os estados
+        # Close the previous session in case the transition skipped the
         # Cool Down/Checkered (comum entre Qualify -> Race).
         if not state.session_finalized:
             prev_multiplier = session_weight(state.session_meta.session_type) if state.session_meta else 0.0
@@ -222,13 +222,13 @@ def main() -> None:
         if player_info:
             logger.info("PlayerCarIdx: %s", player_info.car_idx)
 
-        # Reconcilia a sessao pendente anterior com o SR fresco desta nova sessao
+        # Reconcile the previous pending session against the fresh SR of this one
         # (ver sr/history.py para a justificativa desse mecanismo).
         if player_info and player_info.safety_rating is not None:
             history.reconcile_last_pending(player_info.safety_rating)
             logger.info("Initial SR: %.2f", player_info.safety_rating)
         elif player_info is not None:
-            logger.warning("Nao foi possivel ler o Safety Rating atual (ver docs/RESEARCH.md 3.3)")
+            logger.warning("Could not read the current Safety Rating (see docs/RESEARCH.md section 7)")
 
         corners_per_lap = float(app_settings.fallback_corners_per_lap)
         if track_info:
@@ -236,7 +236,7 @@ def main() -> None:
                 track_info.track_id, track_info.name, track_info.config_name, track_info.num_turns
             )
             logger.info(
-                "Pista: %s | curvas/volta=%.1f (fonte=%s, confianca=%s)",
+                "Track: %s | corners/lap=%.1f (source=%s, confidence=%s)",
                 track_info.display_name, corners_per_lap, source, confidence,
             )
 
@@ -260,10 +260,10 @@ def main() -> None:
         state.session_meta = session_meta
         state.session_finalized = False
 
-        # So marca a sessao como "tratada" quando session_meta veio com sucesso;
+        # Only mark the session as handled once session_meta parsed successfully;
         # caso contrario tenta de novo no proximo tick em vez de travar
-        # permanentemente em "Waiting for session..." (YAML pode nao estar
-        # totalmente populado no instante exato da troca de sessao).
+        # otherwise it could sit forever on "Waiting for session..." (the YAML
+        # may not be fully populated at the exact moment a session changes).
         if session_meta is not None:
             state.current_session_num = session_num
 
