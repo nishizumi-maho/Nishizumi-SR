@@ -1,9 +1,9 @@
 {
  "_meta": {
-  "source": "iRacing /data API - endpoint track/get, via /bff/pub/proxy/data",
+  "source": "iRacing /data API - track/get endpoint",
   "captured_utc": "2026-08-09",
-  "note": "corners_per_lap OFICIAL do iRacing. Chave = track_id (mesmo TrackID do SDK).",
-  "excluded": "tracks com prefixo [Retired] (nao correm mais)"
+  "note": "Official iRacing corners_per_lap. Key = track_id (same TrackID the SDK exposes).",
+  "excluded": "tracks prefixed [Retired] (no longer raced)"
  },
  "tracks": [
   {

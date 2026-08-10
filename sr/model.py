@@ -96,8 +96,12 @@ class SRModelParams:
     Both came out of a joint fit over sprint (GT Sprint Series) and endurance
     (Production / Global / GT Endurance) races - see docs/RESEARCH.md 9.5.
     """
-    window_band1: float = 1050.0
+    window_band1: float = 1060.0
     window_band_ratio: float = 1.4142  # sqrt(2)
+    # Rookie and Class D move faster than everyone else: their windows are
+    # measurably shorter at the same band. C, B, A and Pro share one window.
+    window_factor_rookie: float = 0.69
+    window_factor_class_d: float = 0.83
     max_abs_session_delta: float = 3.0  # sanity clamp
 
 
@@ -109,19 +113,32 @@ def session_weight(session_type: Optional[str]) -> float:
     return SESSION_WEIGHTS.get((session_type or "unknown").lower(), 0.00)
 
 
-def window_corners(band: int, params: "SRModelParams" = None) -> float:
-    """EMA decay constant, in corners, for a driver in this whole-number band.
+def window_corners(band: int, class_index: int = 2, params: "SRModelParams" = None) -> float:
+    """EMA decay constant, in corners, for this band and licence class.
 
-    Measured: the window depends ONLY on the SR band, not on the licence class.
-    Class B and Class A drivers sitting in the same band share the same window
-    to within 2% (B band3 = 2274 corners, A band3 = 2314). Higher SR means a
-    longer memory, which is why it gets progressively harder to move.
+    Measured across 13,849 driver-sessions:
+
+    - Within Class C, B, A and Pro the window depends ONLY on the SR band, not
+      on the class. At band 3 the medians are C 2451, B 2342, A 2448 corners.
+    - Rookie and Class D are genuinely shorter, so their SR moves faster:
+      at band 2, R ~1024 and D ~1367 against ~1750 for C/B/A.
+    - Each band up multiplies the window by sqrt(2).
+
+    Higher SR therefore means a longer memory, which is why SR gets
+    progressively harder to move as it climbs.
     """
     p = params or DEFAULT_PARAMS
-    return p.window_band1 * (p.window_band_ratio ** max(0, int(band) - 1))
+    if class_index <= 0:
+        factor = p.window_factor_rookie
+    elif class_index == 1:
+        factor = p.window_factor_class_d
+    else:
+        factor = 1.0
+    return p.window_band1 * (p.window_band_ratio ** max(0, int(band) - 1)) * factor
 
 
-def session_alpha(corners: float, band: int, params: "SRModelParams" = None) -> float:
+def session_alpha(corners: float, band: int, class_index: int = 2,
+                  params: "SRModelParams" = None) -> float:
     """Weight this session carries in the rolling average.
 
     alpha = 1 - exp(-corners / window)
@@ -135,7 +152,7 @@ def session_alpha(corners: float, band: int, params: "SRModelParams" = None) -> 
     """
     if corners <= 0:
         return 0.0
-    return 1.0 - math.exp(-corners / max(1.0, window_corners(band, params)))
+    return 1.0 - math.exp(-corners / max(1.0, window_corners(band, class_index, params)))
 
 
 def update_cpi(
@@ -143,6 +160,7 @@ def update_cpi(
     corners: float,
     incident_points: float,
     band: int,
+    class_index: int = 2,
     params: SRModelParams = None,
 ) -> float:
     """Apply one session to the accumulated CPI (step 2 of the model).
@@ -153,7 +171,7 @@ def update_cpi(
     params = params or DEFAULT_PARAMS
     if corners <= 0 or cpi_old <= 0:
         return cpi_old
-    alpha = session_alpha(corners, band, params)
+    alpha = session_alpha(corners, band, class_index, params)
     x_old = 1.0 / cpi_old
     x_session = incident_points / corners
     x_new = x_old * (1.0 - alpha) + alpha * x_session
@@ -180,7 +198,7 @@ def project_sr(
     if band is None:
         band = int(math.floor(sr_before))
     cpi_old = cpi_from_sr(sr_before, class_index, band)
-    cpi_new = update_cpi(cpi_old, corners, incident_points, band, params)
+    cpi_new = update_cpi(cpi_old, corners, incident_points, band, class_index, params)
     sr_new, _ = remap_band(cpi_new, class_index, band)
 
     delta = sr_new - sr_before

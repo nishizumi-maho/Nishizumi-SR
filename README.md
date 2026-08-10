@@ -8,7 +8,10 @@
 Both use **exactly the same formula** — verified case by case, the two
 implementations agree to four decimal places.
 
-> **Read [`docs/RESEARCH.md`](docs/RESEARCH.md) first**, especially **section 9**,
+> 📐 **[`docs/MODEL.md`](docs/MODEL.md) is the mathematical description of the
+> model** — the equations, their derivation, and the measured constants.
+>
+> **Read [`docs/RESEARCH.md`](docs/RESEARCH.md) too**, especially **section 9**,
 > which documents what was actually *measured* against iRacing's own data and
 > what is still an approximation. iRacing has never published the formula; what
 > this project has is a reconstruction from the official `old_cpi`/`new_cpi`
@@ -96,7 +99,7 @@ Three steps — `sr/license_map.py` + `sr/model.py`:
 3. remap     SR' = band + a * ln(CPI' / floor(class, band))
              (moving to the neighbouring band when it leaves [band, band+1))
 
-window(band) = 1050 x sqrt(2)^(band-1)  ->  1050 / 1485 / 2100 / 2970 corners
+window(band, class) = 1060 x sqrt(2)^(band-1) x class_factor
 ```
 
 Corners and incidents both arrive already multiplied by the session weight
@@ -116,23 +119,34 @@ support article. The same geometry is why a class promotion costs almost exactly
 Your accumulated CPI is an **exponentially weighted moving average** over corners.
 Two facts here were measured against 10,773 driver-sessions, not assumed:
 
-- **The window depends only on your whole-number SR band, never on your licence
-  class.** A Class B and a Class A driver sitting in the same band share the same
-  window to within 2% (B band 3 = 2274 corners, A band 3 = 2314). A higher SR means
+- **Within Class C, B, A and Pro the window depends only on the SR band, not on
+  the class.** At band 3 the medians are C 2451, B 2342, A 2448 corners. Rookie and
+  Class D are genuinely shorter, so new drivers' SR moves faster. A higher SR means
   a longer memory, which is why SR gets harder to move the higher it climbs.
+
+  | Band | Rookie | Class D | C / B / A / Pro |
+  |---|---|---|---|
+  | 1.xx | 731 | 880 | 1060 |
+  | 2.xx | 1034 | 1244 | 1499 |
+  | 3.xx | 1463 | 1760 | 2120 |
+  | 4.xx | 2069 | 2488 | 2998 |
 - **It is an EMA, not a fixed window with a cap.** Solving `alpha` exactly for every
   session and binning it reproduces `1 - exp(-x)` across the whole observed range
   (x from 0.06 to 2.9). Letting each band take its own free window converges onto
   exactly the √2 progression above, so the law is real rather than imposed.
 
-Accuracy over 10,773 driver-sessions from official results:
+Accuracy over **13,849 driver-sessions** spanning every licence class and
+category:
 
-| metric | v4 (current) | v3 (previous) |
-|---|---|---|
-| CPI prediction error | **1.4%** | 9.2% |
-| SR mean absolute error | **0.026** | 0.090 |
-| median SR error | **0.010** | — |
-| final SR within 0.05 | **93.4%** | 49% |
+| metric | value |
+|---|---|
+| CPI prediction error | **1.21%** |
+| SR mean absolute error | **0.023** |
+| within 0.02 SR | **72.4%** |
+| within 0.01 SR | 44.9% |
+
+Reproduce it with `python tools/fit_model.py`, which reads the anonymous
+calibration set shipped in `data/calibration_set.json`.
 
 Short races are the least precise: iRacing counts distance actually driven, while
 results only report whole laps. Running live, the overlay measures distance
@@ -189,9 +203,16 @@ tracks/
 overlay/                  # PySide6 window, per-mode formatting, styles
 config/                   # settings load/save
 docs/
-    RESEARCH.md           # facts vs. hypotheses (read before touching the model)
+    MODEL.md              # the mathematics: equations, derivation, constants
+    RESEARCH.md           # facts vs. hypotheses, and how the data was obtained
     index.html            # the web calculator
     tracks.json           # track data for the web page
+
+tools/
+    fit_model.py          # offline refit against the calibration set
+
+data/
+    calibration_set.json  # 13,849 anonymous driver-sessions (no identifiers)
 ```
 
 ## 6. Calibrating against your own results

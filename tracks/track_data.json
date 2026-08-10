@@ -79,5 +79,14 @@
         "source": "iracing_data_api",
         "confidence": "alta",
         "updated_at": "2026-08-09T19:47:38.818363+00:00"
+    },
+    {
+        "track_id": 539,
+        "track_name": "Miami International Autodrome",
+        "config_name": "Grand Prix",
+        "corners_per_lap": 17.0,
+        "source": "iracing_data_api",
+        "confidence": "high",
+        "updated_at": "2026-08-10T00:42:46.330796+00:00"
     }
 ]

@@ -85,7 +85,7 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   <p class="sub">Work out what a session will do to your iRacing Safety Rating —
   before you drive it. The CPI→SR mapping here was reconstructed from iRacing's
   own <code>old_cpi</code>/<code>new_cpi</code> data, fitted against
-  <strong>10,773 real driver-sessions</strong>, and typically lands within
+  <strong>13,849 real driver-sessions</strong>, and typically lands within
   <strong>0.01–0.02 SR</strong> of the official result.</p>
 </header>
 
@@ -239,16 +239,25 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   over corners. A session of <code>c</code> corners carries weight</p>
   <pre>alpha  = 1 - exp(-c / window)
 window = 1050 x 1.4142^(band-1)   ->  1050 / 1485 / 2100 / 2970 corners</pre>
-  <p>Two things here were measured, not assumed. The window depends
-  <strong>only on your whole-number SR band, never on your licence class</strong> —
-  a Class B and a Class A driver sitting in the same band share the same window to
-  within 2%. And letting each band take its own free value converges onto exactly
-  that √2 progression. A higher SR means a longer memory, which is why SR gets
-  harder to move the higher it climbs.</p>
-  <p>Fitted against 10,773 driver-sessions from official results: <strong>1.4%
-  error on the predicted CPI</strong>, median <strong>0.010 SR</strong>, and 93% of
-  final SR values within 0.05. Short races are the least precise, because iRacing
-  counts the distance actually driven while results only report whole laps.</p>
+<pre>alpha  = 1 - exp(-c / window)
+window = 1060 x √2^(band-1) x class factor</pre>
+  <table><thead><tr><th>Band</th><th>Rookie</th><th>Class D</th><th>C / B / A / Pro</th></tr></thead>
+  <tbody>
+  <tr><td>1.xx</td><td>731</td><td>880</td><td>1060</td></tr>
+  <tr><td>2.xx</td><td>1034</td><td>1244</td><td>1499</td></tr>
+  <tr><td>3.xx</td><td>1463</td><td>1760</td><td>2120</td></tr>
+  <tr><td>4.xx</td><td>2069</td><td>2488</td><td>2998</td></tr>
+  </tbody></table>
+  <p>All of this was measured, not assumed. Within Class C, B, A and Pro the window
+  depends <strong>only on the SR band, not on the class</strong> — at band 3 the
+  medians are C 2451, B 2342, A 2448 corners. Rookie and Class D are genuinely
+  shorter, so new drivers' SR moves faster. Letting each band take its own free
+  value converges onto exactly the √2 progression.</p>
+  <p>Fitted against <strong>13,849 driver-sessions</strong> across every licence
+  class and category: <strong>1.21% error on the predicted CPI</strong>, mean
+  absolute error <strong>0.023 SR</strong>, and <strong>72%</strong> of results
+  within 0.02 SR. Short races are the least precise, because iRacing counts the
+  distance actually driven while results only report whole laps.</p>
   <p>Practice sessions only count when they are part of a Ranked race event.
   Standalone Open Practice does not affect SR at all.</p>
 </details>
@@ -264,7 +273,8 @@ window = 1050 x 1.4142^(band-1)   ->  1050 / 1485 / 2100 / 2970 corners</pre>
 "use strict";
 /* ─── measured constants (see docs) ─────────────────────────── */
 const A = 1.5236, R = 1.4562, F0 = 3.4949;
-const W_BAND1 = 1050, W_RATIO = 1.4142;   // EMA decay, corners; x sqrt(2) per SR band
+const W_BAND1 = 1060, W_RATIO = Math.SQRT2;  // EMA decay in corners, x sqrt(2) per SR band
+const W_FACTOR = [0.69, 0.83, 1, 1, 1, 1];  // Rookie and Class D move faster
 const WEIGHT = {race:1, heat:1, qualify:.5, warmup:.5, practice:.5,
                 qualify_lone:.35, practice_lone:.35, time_trial:.35};
 
@@ -284,12 +294,13 @@ function remap(cpi, ci, band){
   }
   return {sr: Math.max(0, Math.min(4.99, srFromCpi(cpi, ci, band))), band};
 }
-const windowFor = band => W_BAND1 * Math.pow(W_RATIO, Math.max(0, band - 1));
+const windowFor = (band, ci) =>
+  W_BAND1 * Math.pow(W_RATIO, Math.max(0, band - 1)) * (W_FACTOR[ci] ?? 1);
 function project(sr0, ci, corners, inc){
   const band = Math.floor(sr0);
   const cpi0 = cpiFromSr(sr0, ci);
   if (corners <= 0) return {sr: sr0, delta: 0, cpi: cpi0, band};
-  const a = 1 - Math.exp(-corners / windowFor(band));
+  const a = 1 - Math.exp(-corners / windowFor(band, ci));
   const x = (1/cpi0)*(1-a) + a*(inc/corners);
   const cpi = x > 1e-9 ? 1/x : 1e9;
   const r = remap(cpi, ci, band);
@@ -379,9 +390,25 @@ function render(){
   const laps = lapCount();
   const inc = parseInt(incEl.value, 10);
 
-  $('cpiNote').textContent =
-    `At ${sr0.toFixed(2)} your accumulated CPI is about ${cpiFromSr(sr0, ci).toFixed(1)} `
-    + `— you need ${floorCpi(ci, 3).toFixed(1)} to sit at 3.00 in this class.`;
+  // Bands overlap, so "what CPI reaches the next whole number" is not simply
+  // that band's floor - you climb to b.99 inside your current band first, then
+  // get remapped. Quoting the floor alone reads as if you should already be there.
+  {
+    const b = Math.floor(sr0);
+    const cpiNow = cpiFromSr(sr0, ci);
+    if (b >= 4){
+      $('cpiNote').textContent =
+        `At ${sr0.toFixed(2)} your accumulated CPI is about ${cpiNow.toFixed(1)} — `
+        + `already in the top band for this class.`;
+    } else {
+      const cpiToCross = floorCpi(ci, b) * Math.exp(1 / A);
+      const landsAt = (b + 1) + A * Math.log(cpiToCross / floorCpi(ci, b + 1));
+      $('cpiNote').textContent =
+        `At ${sr0.toFixed(2)} your accumulated CPI is about ${cpiNow.toFixed(1)}. `
+        + `Reaching ${(b + 1)}.00 takes about ${cpiToCross.toFixed(1)} CPI — and because `
+        + `bands overlap you would land at roughly ${landsAt.toFixed(2)}, not ${(b + 1)}.00.`;
+    }
+  }
 
   incEl.disabled = false;
   $('incVal').textContent = inc + 'x';

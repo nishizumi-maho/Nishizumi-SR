@@ -53,8 +53,10 @@ class ModelSettings:
     against iRacing's own result data (sr/license_map.py). What remains
     calibratable is only the rolling-average window.
     """
-    window_band1: float = 1050.0
-    window_band_ratio: float = 1.41
+    window_band1: float = 1060.0
+    window_band_ratio: float = 1.4142
+    window_factor_rookie: float = 0.69
+    window_factor_class_d: float = 0.83
     max_abs_session_delta: float = 3.0
 
 
