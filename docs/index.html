@@ -217,8 +217,11 @@ svg .axis{stroke:var(--line)} svg text{fill:var(--dim);font-size:11px}
   <p>iRacing scores safety as <strong>Corners Per Incident (CPI)</strong>. The
   displayed SR is a mapping of that hidden CPI:</p>
   <pre>SR = band + 1.5236 · ln( CPI / (3.4949 · 1.4562^(class_index + band)) )</pre>
-  <p>This was fitted to 1,280 real <code>(SR, CPI, licence level)</code> observations
-  taken from iRacing's own results data — <strong>MAE 0.007 SR</strong>. The band
+  <p>This was fitted to 12,639 real <code>(SR, CPI, licence level)</code> observations
+  taken from iRacing's own results data, and reproduces iRacing's displayed SR to
+  <strong>MAE 0.0099</strong> held out on 123,361 later sessions. That is the error
+  of this mapping alone; the end-to-end prediction error is larger — see
+  “How well it holds up” below. The band
   floors form a single geometric ladder, which is why
   <code>C@3.00 = B@2.00 = A@1.00 = 22.9 CPI</code>.</p>
 

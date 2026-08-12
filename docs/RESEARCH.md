@@ -16,13 +16,15 @@ Last updated: 2026-08-09.
 | Incident point values | **Official** (Sporting Code §3.5.1) | exact |
 | Session weights | **Official** (Sporting Code §3.6.1.1) | exact |
 | Corners per lap, per track | **Official** (`/data` track catalogue, 436 tracks) | exact |
-| CPI → SR mapping | **Measured**, 12,639 observations | MAE 0.007 SR |
+| CPI → SR mapping | **Measured**, 12,639 observations | MAE 0.0068 SR fitted, **0.0099 held out** |
 | Whole-number band jump | **Derived** from the mapping geometry | — |
 | CPI update (rolling average) | **Measured**, 10,773 sessions | 1.4% on CPI ≈ 0.021 SR |
 | MPR thresholds | Not exposed anywhere | unknown |
 
-The net result is that a session's SR change can be predicted to a median of
-about **0.010 SR**, with 93% of final SR values landing within 0.05.
+Those are the errors of the individual pieces. End to end — the number the app
+actually shows — the held-out result over 123,361 driver-sessions is **MAE
+0.033 SR**, with 88% of predicted SR values landing within 0.05. See
+docs/MODEL.md section 9.
 
 ---
 
