@@ -7,8 +7,11 @@ third is fitted and its residual error is stated below.
 
 THE MODEL, IN THREE STEPS
 1. **Invert.** Turn the SR read from the SDK into the CPI sitting behind it
-   -> `license_map.cpi_from_sr`. Exact: the CPI<->SR mapping reproduces
-   iRacing's own number with MAE 0.007 SR over 12,639 observations.
+   -> `license_map.cpi_from_sr`. Near-exact: the CPI<->SR mapping reproduces
+   iRacing's own number with held-out MAE 0.0099 SR over 123,361
+   driver-sessions (MAE 0.0068 on the 12,639 observations it was fitted to).
+   This is the error of the mapping alone, not of the estimator - the SR the
+   app predicts for a session carries MAE 0.033 SR, see below.
 
 2. **Update the CPI** with the session just driven:
 

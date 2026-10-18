@@ -18,7 +18,9 @@ Global least squares:
     F0 = 3.4949
 
 Validated against a completely independent series after fitting, where a refit
-moved the constants by less than 0.5%.
+moved the constants by less than 0.5%. On the later 123,361-session set the
+shipped constants score MAE 0.0099 SR held out (p99 0.048), beating a fresh
+refit on the same data - see docs/MODEL.md section 9.
 
 TWO THINGS THAT FALL OUT OF THIS GEOMETRY FOR FREE
 1. The "+0.40 on crossing a whole number" iRacing documents does not need to be

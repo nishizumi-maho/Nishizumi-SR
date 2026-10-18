@@ -20,7 +20,8 @@ implementations agree to four decimal places.
 > which documents what was actually *measured* against iRacing's own data and
 > what is still an approximation. iRacing has never published the formula; what
 > this project has is a reconstruction from the official `old_cpi`/`new_cpi`
-> fields that reproduces the CPI→SR mapping with a mean error of 0.007 SR. The
+> fields that reproduces the CPI→SR mapping with a held-out mean error of
+> 0.0099 SR — and predicts the SR itself to 0.033 SR. The
 > part that remains approximate (the rolling window) is labelled as such — the
 > app still calls its number an **Estimated** Safety Rating.
 

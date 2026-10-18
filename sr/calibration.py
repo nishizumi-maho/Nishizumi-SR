@@ -75,7 +75,7 @@ def fit_window_corners(history: list[dict]) -> Optional[SRModelParams]:
     """Calibrate the rolling window against your own reconciled history.
 
     There is no free "gain" coefficient any more: the CPI->SR relationship was
-    measured and reproduces iRacing's own number to within ~0.007 SR (see
+    measured and reproduces iRacing's own number to within ~0.01 SR (see
     sr/license_map.py). The only approximate step left is how far one session
     moves the accumulated CPI, and that is what gets tuned here - by direct
     search on the predicted SR error, since the relationship is not linear.
